@@ -15,39 +15,51 @@ const demoDocuments = [
     id: '1',
     title: 'Employment Contract',
     date: 'May 10, 2023',
-    status: 'completed',
+    status: 'completed' as const,
     signers: [
-      { name: 'John Doe', status: 'signed' },
-      { name: 'Jane Smith', status: 'signed' }
+      { name: 'John Doe', status: 'signed' as const },
+      { name: 'Jane Smith', status: 'signed' as const }
     ]
   },
   {
     id: '2',
     title: 'NDA Agreement',
     date: 'Jun 15, 2023',
-    status: 'waiting',
+    status: 'waiting' as const,
     signers: [
-      { name: 'John Doe', status: 'signed' },
-      { name: 'Alice Brown', status: 'waiting' }
+      { name: 'John Doe', status: 'signed' as const },
+      { name: 'Alice Brown', status: 'waiting' as const }
     ]
   },
   {
     id: '3',
     title: 'Consulting Agreement',
     date: 'Jul 22, 2023',
-    status: 'draft',
+    status: 'draft' as const,
     signers: []
   }
 ];
 
+// Define the document type for better type safety
+type DocumentStatus = 'draft' | 'waiting' | 'completed';
+type SignerStatus = 'signed' | 'waiting' | 'not_sent';
+
+interface DocumentType {
+  id: string;
+  title: string;
+  date: string;
+  status: DocumentStatus;
+  signers: { name: string; status: SignerStatus }[];
+}
+
 const Dashboard = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [documents, setDocuments] = useState(demoDocuments);
+  const [documents, setDocuments] = useState<DocumentType[]>(demoDocuments);
   const [filter, setFilter] = useState('all');
 
   const handleUploadComplete = (file: File) => {
     // Add new document to state
-    const newDocument = {
+    const newDocument: DocumentType = {
       id: String(documents.length + 1),
       title: file.name,
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
