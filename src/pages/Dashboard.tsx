@@ -7,9 +7,9 @@ import DocumentCard from '@/components/DocumentCard';
 import DocumentUploader from '@/components/DocumentUploader';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/utils/toast';
 
-// Mock data for documents
+// Mock data for documents but remove the readonly constraint
 const demoDocuments = [
   {
     id: '1',
@@ -38,7 +38,7 @@ const demoDocuments = [
     status: 'draft',
     signers: []
   }
-] as const;
+];
 
 const Dashboard = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);

@@ -1,8 +1,7 @@
-
 import React, { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/utils/toast';
 
 export default function DocumentUploader({ onUploadComplete }: { onUploadComplete?: (file: File) => void }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -46,7 +45,6 @@ export default function DocumentUploader({ onUploadComplete }: { onUploadComplet
   };
 
   const handleFileSelect = (selectedFile: File) => {
-    // Check file type
     const acceptedTypes = [
       'application/pdf', 
       'application/msword', 
@@ -60,7 +58,6 @@ export default function DocumentUploader({ onUploadComplete }: { onUploadComplet
       return;
     }
 
-    // Check file size (10MB max)
     if (selectedFile.size > 10 * 1024 * 1024) {
       toast.error('File size should be less than 10MB');
       return;
@@ -74,7 +71,6 @@ export default function DocumentUploader({ onUploadComplete }: { onUploadComplet
     
     setUploading(true);
     
-    // Simulate upload delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     setUploading(false);
