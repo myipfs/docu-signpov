@@ -8,7 +8,7 @@ const Header = () => {
     <header className="border-b py-4 px-4 bg-background">
       <div className="container mx-auto max-w-7xl flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-primary">DocuSign</span>
+          <span className="text-xl font-bold text-primary">Signpov</span>
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">

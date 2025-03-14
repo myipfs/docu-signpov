@@ -83,7 +83,7 @@ export default function Hero() {
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              <div className="w-full text-xs text-center text-gray-500">Document Signing Interface</div>
+              <div className="w-full text-xs text-center text-gray-500">Signpov Interface</div>
             </div>
             <div className="w-full aspect-[16/9] bg-white p-8 flex items-center justify-center">
               <div className="w-full max-w-lg">

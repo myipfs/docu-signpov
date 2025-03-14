@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0">
           <div>
-            <h3 className="text-lg font-bold mb-4">DocuSign</h3>
+            <h3 className="text-lg font-bold mb-4">Signpov</h3>
             <p className="text-sm text-foreground/70 max-w-xs">
               A simple, secure platform for requesting and managing digital signatures on any document.
             </p>
@@ -67,7 +67,7 @@ const Footer = () => {
         
         <div className="border-t mt-8 pt-6">
           <p className="text-sm text-foreground/60 text-center">
-            &copy; {new Date().getFullYear()} DocuSign. All rights reserved.
+            &copy; {new Date().getFullYear()} Signpov. All rights reserved.
           </p>
         </div>
       </div>
