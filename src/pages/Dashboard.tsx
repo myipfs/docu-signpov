@@ -70,11 +70,8 @@ const Dashboard = () => {
     setDocuments([...documents, newDocument]);
     setIsUploadModalOpen(false);
     
-    // Show success toast
-    toast({
-      title: "Document uploaded",
-      description: "Your document has been successfully uploaded.",
-    });
+    // Show success toast - fixed to use correct toast function format
+    toast.success("Document uploaded successfully!");
     
     // Redirect to signing page
     setTimeout(() => {
