@@ -9,24 +9,31 @@ import Dashboard from "./pages/Dashboard";
 import SignDocument from "./pages/SignDocument";
 import NotFound from "./pages/NotFound";
 
+// Create a client for React Query
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/sign/:id" element={<SignDocument />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+// Main App component that sets up providers and routing
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        {/* Toast notifications */}
+        <Toaster />
+        <Sonner />
+        
+        {/* Router setup */}
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/sign/:id" element={<SignDocument />} />
+            {/* Catch all route for 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

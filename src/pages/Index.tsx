@@ -4,8 +4,11 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import Footer from '@/components/Footer';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
+  console.log("Rendering Index page"); // Debug log
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -119,9 +122,9 @@ const Index = () => {
                 </li>
               </ul>
               
-              <a href="/dashboard" className="inline-flex justify-center items-center w-full py-3 px-6 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
+              <Link to="/dashboard" className="inline-flex justify-center items-center w-full py-3 px-6 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
                 Get Started
-              </a>
+              </Link>
             </div>
           </div>
         </section>
