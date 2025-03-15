@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, Download, Pen, FileCheck, FileSignature, UserCheck, Home, Briefcase, Shield, FileSpreadsheet } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TemplateEditor } from './TemplateEditor';
+import { toast } from '@/utils/toast';
 
 interface Template {
   id: string;
@@ -18,8 +20,10 @@ interface Template {
 
 export default function Templates() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
   
-  const templates: Template[] = [
+  const [templates, setTemplates] = useState<Template[]>([
     {
       id: 'nda-template',
       title: 'Non-Disclosure Agreement',
@@ -101,7 +105,7 @@ export default function Templates() {
       popular: false,
       icon: <FileText size={20} />
     }
-  ];
+  ]);
   
   const categories = [
     { id: 'all', name: 'All Templates' },
@@ -114,6 +118,31 @@ export default function Templates() {
   const filteredTemplates = templates.filter(template => 
     activeCategory === 'all' || template.category === activeCategory
   );
+
+  const handleEditClick = (template: Template) => {
+    setEditingTemplate(template);
+    setIsEditorOpen(true);
+  };
+
+  const handleSaveTemplate = (updatedTemplate: Template) => {
+    setTemplates(prevTemplates => 
+      prevTemplates.map(template => 
+        template.id === updatedTemplate.id ? updatedTemplate : template
+      )
+    );
+    toast({
+      title: "Template updated",
+      description: `"${updatedTemplate.title}" has been updated successfully.`,
+    });
+  };
+
+  const handleDownload = (templateId: string) => {
+    // In a real app, this would download the template
+    toast({
+      title: "Template downloaded",
+      description: "The template has been downloaded successfully.",
+    });
+  };
 
   return (
     <section id="templates" className="py-20 px-4 bg-secondary/20">
@@ -171,11 +200,21 @@ export default function Templates() {
                 <p className="text-foreground/60 text-xs mb-6 line-clamp-3">{template.details}</p>
                 
                 <div className="flex space-x-3 mt-auto">
-                  <Button variant="outline" size="sm" className="rounded-lg flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="rounded-lg flex-1"
+                    onClick={() => handleDownload(template.id)}
+                  >
                     <Download size={16} className="mr-2" />
                     Download
                   </Button>
-                  <Button variant="default" size="sm" className="rounded-lg flex-1">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="rounded-lg flex-1"
+                    onClick={() => handleEditClick(template)}
+                  >
                     <Pen size={16} className="mr-2" />
                     Edit
                   </Button>
@@ -191,6 +230,16 @@ export default function Templates() {
           </Button>
         </div>
       </div>
+
+      {/* Template Editor Dialog */}
+      {editingTemplate && (
+        <TemplateEditor 
+          template={editingTemplate}
+          open={isEditorOpen}
+          onClose={() => setIsEditorOpen(false)}
+          onSave={handleSaveTemplate}
+        />
+      )}
     </section>
   );
 }
