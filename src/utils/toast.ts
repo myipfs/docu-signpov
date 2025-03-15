@@ -8,10 +8,15 @@ export const toast = (props: {
   variant?: "default" | "destructive";
   // You can add more properties as needed
 }) => {
+  // Use the correct Sonner API
+  if (props.variant === "destructive") {
+    return sonnerToast.error(props.title || "", {
+      description: props.description
+    });
+  }
+  
   return sonnerToast(props.title || "", {
-    description: props.description,
-    // Map our variant to a valid sonner property
-    ...(props.variant === "destructive" ? { className: "destructive" } : {})
+    description: props.description
   });
 };
 
