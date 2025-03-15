@@ -10,21 +10,21 @@ export const toast = (props: {
 }) => {
   return sonnerToast(props.title || "", {
     description: props.description,
-    // Map variant to Sonner's variant (not type)
-    variant: props.variant === "destructive" ? "destructive" : "default",
+    // Map our variant to Sonner's type (the correct property in sonner)
+    type: props.variant === "destructive" ? "error" : "default",
   });
 };
 
 // Add helper methods for direct usage
 toast.error = (message: string) => {
   return sonnerToast(message, {
-    variant: "destructive",
+    type: "error",
   });
 };
 
 toast.success = (message: string) => {
   return sonnerToast(message, {
-    variant: "success",
+    type: "success",
   });
 };
 
