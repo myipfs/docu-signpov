@@ -75,4 +75,9 @@
   .glass-card {
     @apply bg-background/60 backdrop-blur-sm border border-border/80;
   }
+  
+  /* Template card hover effect */
+  .template-card-hover {
+    @apply transition-all duration-300 hover:translate-y-[-5px] hover:shadow-lg;
+  }
 }
