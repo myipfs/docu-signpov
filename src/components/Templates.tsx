@@ -3,15 +3,17 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, Pen } from 'lucide-react';
+import { FileText, Download, Pen, FileCheck, FileSignature, UserCheck, Home, Briefcase, Shield, FileSpreadsheet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Template {
   id: string;
   title: string;
   description: string;
+  details: string;
   category: 'contract' | 'agreement' | 'form' | 'legal';
   popular: boolean;
+  icon: React.ReactNode;
 }
 
 export default function Templates() {
@@ -22,43 +24,82 @@ export default function Templates() {
       id: 'nda-template',
       title: 'Non-Disclosure Agreement',
       description: 'Protect sensitive information when dealing with contractors, employees, or business partners.',
+      details: 'This comprehensive NDA template includes clauses for confidential information definition, exclusions, obligations of receiving parties, and remedies for breach.',
       category: 'legal',
-      popular: true
+      popular: true,
+      icon: <Shield size={20} />
     },
     {
       id: 'employment-contract',
       title: 'Employment Contract',
       description: 'Standard employment agreement outlining roles, compensation, and terms.',
+      details: 'Includes sections for job responsibilities, compensation package, benefits, PTO policy, termination conditions, and intellectual property rights.',
       category: 'contract',
-      popular: true
+      popular: true,
+      icon: <Briefcase size={20} />
     },
     {
       id: 'rental-agreement',
       title: 'Rental Agreement',
       description: 'Property rental contract with terms for both landlords and tenants.',
+      details: 'Covers rent amount, security deposit, maintenance responsibilities, pet policies, lease duration, and early termination conditions.',
       category: 'agreement',
-      popular: true
+      popular: true,
+      icon: <Home size={20} />
     },
     {
       id: 'service-agreement',
       title: 'Service Agreement',
       description: 'Clear terms for service providers and clients to avoid misunderstandings.',
+      details: 'Outlines scope of services, payment terms, timeline for delivery, quality standards, liability limitations, and dispute resolution process.',
       category: 'agreement',
-      popular: false
+      popular: false,
+      icon: <FileCheck size={20} />
     },
     {
       id: 'invoice-template',
       title: 'Invoice Template',
       description: 'Professional invoice template for billing clients or customers.',
+      details: 'Includes company details, client information, itemized services/products, payment terms, tax calculations, and multiple payment method options.',
       category: 'form',
-      popular: true
+      popular: true,
+      icon: <FileSpreadsheet size={20} />
     },
     {
       id: 'consent-form',
       title: 'Consent Form',
       description: 'General consent form for obtaining permission for various activities.',
+      details: 'Customizable template with clear language explaining rights, risks, benefits, and ability to withdraw consent at any time.',
       category: 'form',
-      popular: false
+      popular: false,
+      icon: <UserCheck size={20} />
+    },
+    {
+      id: 'consulting-agreement',
+      title: 'Consulting Agreement',
+      description: 'Define the scope and terms of consulting services.',
+      details: 'Comprehensive template covering consultant obligations, client responsibilities, fee structure, work product ownership, and confidentiality provisions.',
+      category: 'contract',
+      popular: true,
+      icon: <FileSignature size={20} />
+    },
+    {
+      id: 'partnership-agreement',
+      title: 'Partnership Agreement',
+      description: 'Establish terms between business partners with clear expectations.',
+      details: 'Includes capital contributions, profit/loss distribution, management responsibilities, dispute resolution, and partnership dissolution procedures.',
+      category: 'legal',
+      popular: false,
+      icon: <Briefcase size={20} />
+    },
+    {
+      id: 'equipment-lease',
+      title: 'Equipment Lease Agreement',
+      description: 'Document the terms for leasing equipment to businesses or individuals.',
+      details: 'Covers equipment description, lease duration, payment schedule, maintenance responsibilities, insurance requirements, and end-of-lease options.',
+      category: 'agreement',
+      popular: false,
+      icon: <FileText size={20} />
     }
   ];
   
@@ -106,7 +147,7 @@ export default function Templates() {
             <Card 
               key={template.id}
               className={cn(
-                "glass-card overflow-hidden transition-all duration-200 hover:shadow-md",
+                "glass-card overflow-hidden transition-all duration-200 hover:shadow-md template-card-hover",
                 template.popular && "border-primary/20"
               )}
             >
@@ -122,11 +163,12 @@ export default function Templates() {
                 )}
                 
                 <div className="mb-4 bg-primary/10 text-primary p-3 rounded-lg inline-block">
-                  <FileText size={20} />
+                  {template.icon}
                 </div>
                 
                 <h3 className="text-xl font-medium mb-2">{template.title}</h3>
-                <p className="text-foreground/70 text-sm mb-6">{template.description}</p>
+                <p className="text-foreground/70 text-sm mb-3">{template.description}</p>
+                <p className="text-foreground/60 text-xs mb-6 line-clamp-3">{template.details}</p>
                 
                 <div className="flex space-x-3 mt-auto">
                   <Button variant="outline" size="sm" className="rounded-lg flex-1">
