@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SignDocument from "./pages/SignDocument";
 import NotFound from "./pages/NotFound";
+import DocumentEditor from "./pages/DocumentEditor";
+import TemplatesPage from "./pages/TemplatesPage";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -27,6 +29,8 @@ const App = () => {
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/sign/:id" element={<SignDocument />} />
+            <Route path="/editor" element={<DocumentEditor />} />
+            <Route path="/templates" element={<TemplatesPage />} />
             {/* Catch all route for 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,10 +17,20 @@ interface Template {
   icon: React.ReactNode;
 }
 
-export default function Templates() {
-  const [activeCategory, setActiveCategory] = useState<string>('all');
+interface TemplatesProps {
+  initialCategory?: string;
+}
+
+export default function Templates({ initialCategory = 'all' }: TemplatesProps) {
+  const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  
+  useEffect(() => {
+    if (initialCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }, [initialCategory]);
   
   const [templates, setTemplates] = useState<Template[]>([
     {
@@ -137,7 +146,6 @@ export default function Templates() {
   };
 
   const handleDownload = (templateId: string) => {
-    // In a real app, this would download the template
     toast({
       title: "Template downloaded",
       description: "The template has been downloaded successfully.",
@@ -145,30 +153,31 @@ export default function Templates() {
   };
 
   return (
-    <section id="templates" className="py-20 px-4 bg-secondary/20">
+    <section id="templates" className="py-10 px-4 bg-secondary/20 rounded-lg">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">
-            Popular <span className="text-gradient">Templates</span>
-          </h2>
-          <p className="max-w-2xl mx-auto text-foreground/70 mb-8">
-            Get started quickly with our most popular document templates
-          </p>
-          
-          {/* Category tabs */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {categories.map(category => (
-              <Button
-                key={category.id}
-                variant={activeCategory === category.id ? "default" : "outline"}
-                size="sm"
-                onClick={() => setActiveCategory(category.id)}
-                className="rounded-full"
-              >
-                {category.name}
-              </Button>
-            ))}
+        {!initialCategory && (
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">
+              Popular <span className="text-gradient">Templates</span>
+            </h2>
+            <p className="max-w-2xl mx-auto text-foreground/70 mb-8">
+              Get started quickly with our most popular document templates
+            </p>
           </div>
+        )}
+        
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {categories.map(category => (
+            <Button
+              key={category.id}
+              variant={activeCategory === category.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveCategory(category.id)}
+              className="rounded-full"
+            >
+              {category.name}
+            </Button>
+          ))}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -224,14 +233,15 @@ export default function Templates() {
           ))}
         </div>
         
-        <div className="text-center mt-12">
-          <Button asChild variant="outline" size="lg" className="rounded-lg px-8">
-            <Link to="/dashboard">View All Templates</Link>
-          </Button>
-        </div>
+        {!initialCategory && (
+          <div className="text-center mt-12">
+            <Button asChild variant="outline" size="lg" className="rounded-lg px-8">
+              <Link to="/templates">View All Templates</Link>
+            </Button>
+          </div>
+        )}
       </div>
 
-      {/* Template Editor Dialog */}
       {editingTemplate && (
         <TemplateEditor 
           template={editingTemplate}
