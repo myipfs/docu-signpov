@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -30,11 +29,9 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Set canvas size
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
-    // Style canvas
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#000';
@@ -117,7 +114,6 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     if (activeTab === 'draw' && isDrawn) {
       signatureDataUrl = canvasRef.current?.toDataURL() || null;
     } else if (activeTab === 'type' && typedName.trim()) {
-      // Create a temporary canvas to render the typed signature
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = 300;
       tempCanvas.height = 150;
@@ -261,8 +257,8 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
                     <p className="text-sm text-muted-foreground mb-4">
                       Upload an image of your signature
                     </p>
-                    <label>
-                      <Button variant="outline" component="span">
+                    <label className="cursor-pointer">
+                      <Button variant="outline" type="button">
                         Choose File
                       </Button>
                       <input
