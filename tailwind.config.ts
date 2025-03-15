@@ -121,9 +121,8 @@ export default {
 				'fade-up': 'fade-up 0.5s ease-out',
 				'slide-in-right': 'slide-in-right 0.3s ease-out',
 				'slide-in-left': 'slide-in-left 0.3s ease-out',
-				float: 'float
-				float: 'float 3s ease-in-out infinite',
-				pulse: 'pulse 2s ease-in-out infinite'
+				'float': 'float 3s ease-in-out infinite',
+				'pulse': 'pulse 2s ease-in-out infinite'
 			}
 		}
 	},
