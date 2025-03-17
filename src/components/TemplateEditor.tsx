@@ -6,16 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/utils/toast';
 import { Pen, Save, X } from 'lucide-react';
-
-interface Template {
-  id: string;
-  title: string;
-  description: string;
-  details: string;
-  category: 'contract' | 'agreement' | 'form' | 'legal';
-  popular: boolean;
-  icon: React.ReactNode;
-}
+import { Template } from '@/types/template';
 
 interface TemplateEditorProps {
   template: Template;
