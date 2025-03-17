@@ -16,6 +16,14 @@ interface SignaturePadProps {
   initialName?: string;
 }
 
+// Define the signature type to match the database schema
+interface SavedSignature {
+  id: string;
+  signature_data: string;
+  name: string | null;
+  is_default: boolean | null;
+}
+
 export function SignaturePad({ open, onClose, onSave, initialName = '' }: SignaturePadProps) {
   const [activeTab, setActiveTab] = useState<'draw' | 'type' | 'upload' | 'saved'>('draw');
   const [typedName, setTypedName] = useState(initialName);
@@ -23,7 +31,7 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
   const [saveToAccount, setSaveToAccount] = useState(false);
   const [signatureName, setSignatureName] = useState('');
   const [isDefault, setIsDefault] = useState(false);
-  const [savedSignatures, setSavedSignatures] = useState<Array<{ id: string, signature_data: string, name: string | null }>>([]);
+  const [savedSignatures, setSavedSignatures] = useState<SavedSignature[]>([]);
   const [selectedSignatureId, setSelectedSignatureId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -167,6 +175,12 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     try {
       setIsLoading(true);
       
+      // Check for user session to get user_id
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) {
+        throw new Error('User not authenticated');
+      }
+      
       // If isDefault is true, we need to update all other signatures to not be default
       if (isDefault) {
         await supabase
@@ -177,13 +191,12 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
       
       const { data, error } = await supabase
         .from('signatures')
-        .insert([
-          { 
-            signature_data: signatureDataUrl, 
-            name: signatureName || typedName || null,
-            is_default: isDefault
-          }
-        ])
+        .insert({
+          signature_data: signatureDataUrl,
+          name: signatureName || typedName || null,
+          is_default: isDefault,
+          user_id: session.user.id
+        })
         .select()
         .single();
       
