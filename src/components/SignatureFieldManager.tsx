@@ -44,7 +44,6 @@ export function SignatureFieldManager({
   readOnly = false
 }: SignatureFieldManagerProps) {
   const [isAddingRecipient, setIsAddingRecipient] = useState(false);
-  // Fix here: explicitly type newRecipient to match the Recipient interface
   const [newRecipient, setNewRecipient] = useState<Omit<Recipient, 'id'>>({ 
     name: '', 
     email: '', 
@@ -135,7 +134,6 @@ export function SignatureFieldManager({
                       value={newRecipient.role}
                       onChange={(e) => setNewRecipient({ 
                         ...newRecipient, 
-                        // Fix here: explicitly cast the value to the allowed role type
                         role: e.target.value as 'signer' | 'viewer'
                       })}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"

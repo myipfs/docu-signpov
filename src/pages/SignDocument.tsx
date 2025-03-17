@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { toast } from '@/utils/toast';
+import { SignaturePad } from '@/components/SignaturePad';
 
 const SignDocument = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,135 +28,17 @@ const SignDocument = () => {
     return () => clearTimeout(timer);
   }, [id]);
   
-  // Simple canvas signature pad
-  const SignaturePad = () => {
-    const canvasRef = React.useRef<HTMLCanvasElement>(null);
-    const [isDrawing, setIsDrawing] = useState(false);
-    
-    useEffect(() => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      const context = canvas.getContext('2d');
-      if (!context) return;
-      
-      // Set canvas properties
-      context.lineWidth = 2;
-      context.lineCap = 'round';
-      context.strokeStyle = '#000';
-      
-      // Clear canvas
-      context.fillStyle = '#fff';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      
-    }, []);
-    
-    const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-      setIsDrawing(true);
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      const context = canvas.getContext('2d');
-      if (!context) return;
-      
-      let clientX, clientY;
-      
-      if ('touches' in e) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      
-      const rect = canvas.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-      
-      context.beginPath();
-      context.moveTo(x, y);
-    };
-    
-    const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-      if (!isDrawing) return;
-      
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      const context = canvas.getContext('2d');
-      if (!context) return;
-      
-      let clientX, clientY;
-      
-      if ('touches' in e) {
-        e.preventDefault(); // Prevent scrolling on touch devices
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      
-      const rect = canvas.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-      
-      context.lineTo(x, y);
-      context.stroke();
-    };
-    
-    const stopDrawing = () => {
-      setIsDrawing(false);
-      
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      setSignature(canvas.toDataURL());
-    };
-    
-    const clearCanvas = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      const context = canvas.getContext('2d');
-      if (!context) return;
-      
-      context.fillStyle = '#fff';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      setSignature(null);
-    };
-    
-    return (
-      <div className="flex flex-col items-center">
-        <canvas
-          ref={canvasRef}
-          width={400}
-          height={200}
-          className="border rounded-lg cursor-crosshair touch-none"
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
-        />
-        <div className="flex mt-4 space-x-2">
-          <Button variant="outline" onClick={clearCanvas} className="rounded-lg">
-            Clear
-          </Button>
-        </div>
-      </div>
-    );
+  const handleSignatureCreate = (signatureDataUrl: string) => {
+    setSignature(signatureDataUrl);
+    setIsSignatureModalOpen(false);
   };
   
-  const handleSubmitSignature = () => {
+  const handleSubmitDocument = () => {
     if (!signature) {
       toast.error('Please sign the document before submitting');
       return;
     }
     
-    setIsSignatureModalOpen(false);
     setIsSubmitting(true);
     
     // Simulate submission delay
@@ -204,7 +88,7 @@ const SignDocument = () => {
               </Button>
               <Button 
                 className="rounded-lg"
-                onClick={() => setIsSignatureModalOpen(true)}
+                onClick={signature ? handleSubmitDocument : () => setIsSignatureModalOpen(true)}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -215,7 +99,7 @@ const SignDocument = () => {
                     </svg>
                     Processing...
                   </>
-                ) : 'Sign Document'}
+                ) : signature ? 'Submit Document' : 'Sign Document'}
               </Button>
             </div>
           </div>
@@ -268,26 +152,13 @@ const SignDocument = () => {
         </div>
       </main>
       
-      {/* Signature Modal */}
-      <Dialog open={isSignatureModalOpen} onOpenChange={setIsSignatureModalOpen}>
-        <DialogContent className="max-w-md rounded-xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Add Your Signature</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <SignaturePad />
-          </div>
-          <DialogFooter>
-            <Button 
-              onClick={handleSubmitSignature} 
-              className="rounded-lg w-full"
-              disabled={!signature}
-            >
-              Apply Signature
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Use the proper SignaturePad component */}
+      <SignaturePad 
+        open={isSignatureModalOpen} 
+        onClose={() => setIsSignatureModalOpen(false)}
+        onSave={handleSignatureCreate}
+        initialName=""
+      />
     </div>
   );
 };
