@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/utils/toast';
 import { Trash2, Pencil, Move, Check } from 'lucide-react';
 import { SignaturePad } from './SignaturePad';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SignatureFieldProps {
   id: string;
@@ -34,6 +35,17 @@ export function SignatureField({
   const [isDragging, setIsDragging] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
   const [isSignaturePadOpen, setIsSignaturePadOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check auth status when component mounts
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsAuthenticated(!!data.session);
+    };
+    
+    checkAuth();
+  }, []);
 
   const handleSign = () => {
     if (readOnly) return;

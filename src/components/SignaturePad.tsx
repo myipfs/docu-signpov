@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/utils/toast';
-import { Eraser, Download, Upload } from 'lucide-react';
+import { Eraser, Download, Upload, Check, Save } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SignaturePadProps {
   open: boolean;
@@ -15,13 +17,65 @@ interface SignaturePadProps {
 }
 
 export function SignaturePad({ open, onClose, onSave, initialName = '' }: SignaturePadProps) {
-  const [activeTab, setActiveTab] = useState<'draw' | 'type' | 'upload'>('draw');
+  const [activeTab, setActiveTab] = useState<'draw' | 'type' | 'upload' | 'saved'>('draw');
   const [typedName, setTypedName] = useState(initialName);
   const [selectedFont, setSelectedFont] = useState('font-signature');
+  const [saveToAccount, setSaveToAccount] = useState(false);
+  const [signatureName, setSignatureName] = useState('');
+  const [isDefault, setIsDefault] = useState(false);
+  const [savedSignatures, setSavedSignatures] = useState<Array<{ id: string, signature_data: string, name: string | null }>>([]);
+  const [selectedSignatureId, setSelectedSignatureId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isPainting, setIsPainting] = useState(false);
   const [isDrawn, setIsDrawn] = useState(false);
   const [uploadedSignature, setUploadedSignature] = useState<string | null>(null);
+  
+  // Check if user is authenticated and load their saved signatures
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const isLoggedIn = !!session;
+      setIsAuthenticated(isLoggedIn);
+      
+      if (isLoggedIn && open) {
+        loadSavedSignatures();
+      }
+    };
+    
+    if (open) {
+      checkAuth();
+    }
+  }, [open]);
+  
+  const loadSavedSignatures = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('signatures')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setSavedSignatures(data || []);
+      
+      // Set the default signature as selected if it exists
+      const defaultSignature = data?.find(sig => sig.is_default);
+      if (defaultSignature) {
+        setSelectedSignatureId(defaultSignature.id);
+      }
+    } catch (error) {
+      console.error('Error loading signatures:', error);
+      toast.error('Failed to load saved signatures');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   const setupCanvas = () => {
     const canvas = canvasRef.current;
@@ -109,10 +163,55 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     reader.readAsDataURL(file);
   };
   
-  const handleSave = () => {
+  const saveSignatureToDatabase = async (signatureDataUrl: string) => {
+    try {
+      setIsLoading(true);
+      
+      // If isDefault is true, we need to update all other signatures to not be default
+      if (isDefault) {
+        await supabase
+          .from('signatures')
+          .update({ is_default: false })
+          .not('id', 'is', null);
+      }
+      
+      const { data, error } = await supabase
+        .from('signatures')
+        .insert([
+          { 
+            signature_data: signatureDataUrl, 
+            name: signatureName || typedName || null,
+            is_default: isDefault
+          }
+        ])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      toast.success('Signature saved to your account');
+      
+      // Refresh the saved signatures list
+      loadSavedSignatures();
+      
+    } catch (error) {
+      console.error('Error saving signature:', error);
+      toast.error('Failed to save signature to your account');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleSave = async () => {
     let signatureDataUrl: string | null = null;
     
-    if (activeTab === 'draw' && isDrawn) {
+    // If the saved signatures tab is active and a signature is selected
+    if (activeTab === 'saved' && selectedSignatureId) {
+      const selectedSignature = savedSignatures.find(sig => sig.id === selectedSignatureId);
+      if (selectedSignature) {
+        signatureDataUrl = selectedSignature.signature_data;
+      }
+    } else if (activeTab === 'draw' && isDrawn) {
       signatureDataUrl = canvasRef.current?.toDataURL() || null;
     } else if (activeTab === 'type' && typedName.trim()) {
       const tempCanvas = document.createElement('canvas');
@@ -138,8 +237,69 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
       return;
     }
     
+    // Save to database if the user is authenticated and has checked the save option
+    if (isAuthenticated && saveToAccount && activeTab !== 'saved') {
+      await saveSignatureToDatabase(signatureDataUrl);
+    }
+    
     onSave(signatureDataUrl);
     onClose();
+  };
+  
+  const setSignatureAsDefault = async (signatureId: string) => {
+    try {
+      setIsLoading(true);
+      
+      // First set all signatures to not default
+      await supabase
+        .from('signatures')
+        .update({ is_default: false })
+        .not('id', 'is', null);
+      
+      // Then set the selected one as default
+      const { error } = await supabase
+        .from('signatures')
+        .update({ is_default: true })
+        .eq('id', signatureId);
+      
+      if (error) throw error;
+      
+      toast.success('Default signature updated');
+      loadSavedSignatures();
+      
+    } catch (error) {
+      console.error('Error updating default signature:', error);
+      toast.error('Failed to update default signature');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const deleteSignature = async (signatureId: string) => {
+    try {
+      setIsLoading(true);
+      
+      const { error } = await supabase
+        .from('signatures')
+        .delete()
+        .eq('id', signatureId);
+      
+      if (error) throw error;
+      
+      toast.success('Signature deleted');
+      
+      if (selectedSignatureId === signatureId) {
+        setSelectedSignatureId(null);
+      }
+      
+      loadSavedSignatures();
+      
+    } catch (error) {
+      console.error('Error deleting signature:', error);
+      toast.error('Failed to delete signature');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -150,10 +310,13 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
         </DialogHeader>
         
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-          <TabsList className="grid grid-cols-3">
+          <TabsList className="grid grid-cols-4">
             <TabsTrigger value="draw">Draw</TabsTrigger>
             <TabsTrigger value="type">Type</TabsTrigger>
             <TabsTrigger value="upload">Upload</TabsTrigger>
+            {isAuthenticated && (
+              <TabsTrigger value="saved">Saved</TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="draw" className="mt-4">
@@ -180,6 +343,43 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
                 </Button>
               </div>
             </div>
+            
+            {isAuthenticated && (
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="save-signature" 
+                    checked={saveToAccount}
+                    onCheckedChange={(checked) => setSaveToAccount(checked as boolean)}
+                  />
+                  <label htmlFor="save-signature" className="text-sm cursor-pointer">
+                    Save this signature to my account
+                  </label>
+                </div>
+                
+                {saveToAccount && (
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Signature name (optional)"
+                      value={signatureName}
+                      onChange={(e) => setSignatureName(e.target.value)}
+                      className="text-sm"
+                    />
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="default-signature" 
+                        checked={isDefault}
+                        onCheckedChange={(checked) => setIsDefault(checked as boolean)}
+                      />
+                      <label htmlFor="default-signature" className="text-sm cursor-pointer">
+                        Set as default signature
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="type" className="mt-4">
@@ -232,6 +432,43 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
                   </div>
                 )}
               </div>
+              
+              {isAuthenticated && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="save-typed-signature" 
+                      checked={saveToAccount}
+                      onCheckedChange={(checked) => setSaveToAccount(checked as boolean)}
+                    />
+                    <label htmlFor="save-typed-signature" className="text-sm cursor-pointer">
+                      Save this signature to my account
+                    </label>
+                  </div>
+                  
+                  {saveToAccount && (
+                    <div className="space-y-2">
+                      <Input
+                        placeholder="Signature name (optional)"
+                        value={signatureName}
+                        onChange={(e) => setSignatureName(e.target.value)}
+                        className="text-sm"
+                      />
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="default-typed-signature" 
+                          checked={isDefault}
+                          onCheckedChange={(checked) => setIsDefault(checked as boolean)}
+                        />
+                        <label htmlFor="default-typed-signature" className="text-sm cursor-pointer">
+                          Set as default signature
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </TabsContent>
           
@@ -272,16 +509,137 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
                   </div>
                 )}
               </div>
+              
+              {isAuthenticated && uploadedSignature && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="save-uploaded-signature" 
+                      checked={saveToAccount}
+                      onCheckedChange={(checked) => setSaveToAccount(checked as boolean)}
+                    />
+                    <label htmlFor="save-uploaded-signature" className="text-sm cursor-pointer">
+                      Save this signature to my account
+                    </label>
+                  </div>
+                  
+                  {saveToAccount && (
+                    <div className="space-y-2">
+                      <Input
+                        placeholder="Signature name (optional)"
+                        value={signatureName}
+                        onChange={(e) => setSignatureName(e.target.value)}
+                        className="text-sm"
+                      />
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="default-uploaded-signature" 
+                          checked={isDefault}
+                          onCheckedChange={(checked) => setIsDefault(checked as boolean)}
+                        />
+                        <label htmlFor="default-uploaded-signature" className="text-sm cursor-pointer">
+                          Set as default signature
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </TabsContent>
+          
+          {isAuthenticated && (
+            <TabsContent value="saved" className="mt-4">
+              <div className="grid gap-4">
+                {isLoading ? (
+                  <div className="flex justify-center items-center h-32">
+                    <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full"></div>
+                  </div>
+                ) : savedSignatures.length > 0 ? (
+                  <div className="grid gap-3">
+                    {savedSignatures.map((signature) => (
+                      <div 
+                        key={signature.id} 
+                        className={`border rounded-md p-3 cursor-pointer transition-all ${
+                          selectedSignatureId === signature.id ? 'border-primary ring-1 ring-primary' : ''
+                        }`}
+                        onClick={() => setSelectedSignatureId(signature.id)}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium">
+                              {signature.name || 'Unnamed Signature'}
+                            </span>
+                            {signature.is_default && (
+                              <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex gap-1">
+                            {!signature.is_default && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSignatureAsDefault(signature.id);
+                                }}
+                                title="Set as default"
+                              >
+                                <Check className="h-3.5 w-3.5" />
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0 text-destructive hover:text-destructive/90"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteSignature(signature.id);
+                              }}
+                              title="Delete signature"
+                            >
+                              <Eraser className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="bg-white p-3 rounded border">
+                          <img 
+                            src={signature.signature_data} 
+                            alt={signature.name || 'Signature'} 
+                            className="max-h-12 mx-auto"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>You don't have any saved signatures yet.</p>
+                    <p className="text-sm mt-1">Create and save a signature using the other tabs.</p>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
-            Save Signature
+          <Button onClick={handleSave} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2"></div>
+                Processing...
+              </>
+            ) : (
+              'Save Signature'
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
