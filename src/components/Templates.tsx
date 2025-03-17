@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,8 +37,8 @@ export default function Templates({ initialCategory = 'all' }: TemplatesProps) {
     {
       id: 'nda-template',
       title: 'Non-Disclosure Agreement',
-      description: 'Protect sensitive information when dealing with contractors, employees, or business partners.',
-      details: 'This comprehensive NDA template includes clauses for confidential information definition, exclusions, obligations of receiving parties, and remedies for breach.',
+      description: 'Protect confidential information when sharing with third parties.',
+      details: 'This comprehensive NDA template is based on industry standards and covers: (1) Clear definition of what constitutes confidential information (2) Specific exclusions from confidential information (3) Obligations of the receiving party including reasonable care standard (4) Term of confidentiality obligations (5) Return or destruction of confidential materials (6) Remedies for breach including injunctive relief (7) Standard exceptions for legally required disclosures (8) Non-solicitation provisions (9) Governing law and jurisdiction clauses (10) Severability provisions.',
       category: 'legal',
       popular: true,
       icon: <Shield size={20} />
@@ -45,62 +46,62 @@ export default function Templates({ initialCategory = 'all' }: TemplatesProps) {
     {
       id: 'employment-contract',
       title: 'Employment Contract',
-      description: 'Standard employment agreement outlining roles, compensation, and terms.',
-      details: 'Includes sections for job responsibilities, compensation package, benefits, PTO policy, termination conditions, and intellectual property rights.',
+      description: 'Comprehensive agreement between employer and employee.',
+      details: 'Based on standard employment law practices, this contract includes: (1) Detailed job description and responsibilities (2) Compensation structure including base salary, bonuses, and equity if applicable (3) Benefits package details including healthcare, retirement, and paid time off (4) Work schedule and location specifications (5) Confidentiality and intellectual property provisions (6) Non-compete and non-solicitation clauses with reasonable geographic and time limitations (7) Termination conditions including notice periods (8) Severance provisions (9) Dispute resolution process (10) Governing law provisions.',
       category: 'contract',
       popular: true,
       icon: <Briefcase size={20} />
     },
     {
       id: 'rental-agreement',
-      title: 'Rental Agreement',
-      description: 'Property rental contract with terms for both landlords and tenants.',
-      details: 'Covers rent amount, security deposit, maintenance responsibilities, pet policies, lease duration, and early termination conditions.',
+      title: 'Residential Lease Agreement',
+      description: 'Comprehensive lease contract for residential properties.',
+      details: 'This standardized lease agreement includes: (1) Property description and permitted use (2) Lease term with specific start and end dates (3) Rent amount, due dates, and acceptable payment methods (4) Security deposit amount and conditions for return (5) Utilities and maintenance responsibilities (6) Tenant alterations and improvements policies (7) Pet policies and associated deposits or fees (8) Rules regarding occupancy limits (9) Entry notice requirements (10) Default and remedies (11) Early termination conditions (12) Renewal terms and rent increase provisions.',
       category: 'agreement',
       popular: true,
       icon: <Home size={20} />
     },
     {
       id: 'service-agreement',
-      title: 'Service Agreement',
-      description: 'Clear terms for service providers and clients to avoid misunderstandings.',
-      details: 'Outlines scope of services, payment terms, timeline for delivery, quality standards, liability limitations, and dispute resolution process.',
+      title: 'Professional Services Agreement',
+      description: 'Contract for service providers and clients with clear deliverables.',
+      details: 'This service agreement template includes: (1) Detailed scope of services with specific deliverables (2) Project timeline with milestones (3) Payment terms including amount, schedule, and late payment penalties (4) Intellectual property ownership provisions (5) Confidentiality obligations (6) Representations and warranties (7) Limitation of liability clauses (8) Indemnification provisions (9) Termination rights and procedures (10) Change order process (11) Independent contractor relationship clarification (12) Force majeure provisions (13) Insurance requirements (14) Dispute resolution procedures.',
       category: 'agreement',
       popular: false,
       icon: <FileCheck size={20} />
     },
     {
       id: 'invoice-template',
-      title: 'Invoice Template',
-      description: 'Professional invoice template for billing clients or customers.',
-      details: 'Includes company details, client information, itemized services/products, payment terms, tax calculations, and multiple payment method options.',
+      title: 'Professional Invoice Template',
+      description: 'Comprehensive invoice with payment terms and itemization.',
+      details: 'This professional invoice template includes: (1) Company name, logo, and contact information (2) Client details including billing address (3) Unique invoice number for tracking (4) Issue date and payment due date (5) Detailed itemization of products/services with descriptions, quantities, rates, and subtotals (6) Subtotal, tax calculations, and grand total (7) Payment terms and late payment policies (8) Accepted payment methods with relevant account details (9) Thank you message (10) Notes section for special instructions (11) Professional footer with business registration numbers and terms.',
       category: 'form',
       popular: true,
       icon: <FileSpreadsheet size={20} />
     },
     {
       id: 'consent-form',
-      title: 'Consent Form',
-      description: 'General consent form for obtaining permission for various activities.',
-      details: 'Customizable template with clear language explaining rights, risks, benefits, and ability to withdraw consent at any time.',
+      title: 'Informed Consent Form',
+      description: 'Detailed consent form for medical, research, or participation purposes.',
+      details: 'This comprehensive consent form includes: (1) Clear introduction explaining the purpose (2) Detailed explanation of procedures or activities (3) Specific risks and discomforts disclosure (4) Benefits section (5) Alternative procedures or options when applicable (6) Confidentiality and privacy protections (7) Compensation details if relevant (8) Emergency contact procedures (9) Voluntary participation statement and right to withdraw (10) Contact information for questions (11) Statement of consent with signature blocks (12) Witness signature section when required (13) Revocation section if applicable.',
       category: 'form',
       popular: false,
       icon: <UserCheck size={20} />
     },
     {
       id: 'consulting-agreement',
-      title: 'Consulting Agreement',
-      description: 'Define the scope and terms of consulting services.',
-      details: 'Comprehensive template covering consultant obligations, client responsibilities, fee structure, work product ownership, and confidentiality provisions.',
+      title: 'Consulting Services Agreement',
+      description: 'Contract for independent consultants with scope and deliverables.',
+      details: 'This consulting agreement includes: (1) Detailed description of consulting services (2) Term of engagement with start and end dates (3) Compensation structure including hourly/daily rates or project fees (4) Payment schedule and invoicing procedures (5) Expense reimbursement policies (6) Deliverables and acceptance criteria (7) Independent contractor status clarification (8) Confidentiality provisions (9) Work product ownership (10) Non-solicitation clauses (11) Termination rights (12) Representations and warranties (13) Limitation of liability (14) Insurance requirements (15) Non-exclusivity provisions (16) Dispute resolution procedures.',
       category: 'contract',
       popular: true,
       icon: <FileSignature size={20} />
     },
     {
       id: 'partnership-agreement',
-      title: 'Partnership Agreement',
-      description: 'Establish terms between business partners with clear expectations.',
-      details: 'Includes capital contributions, profit/loss distribution, management responsibilities, dispute resolution, and partnership dissolution procedures.',
+      title: 'General Partnership Agreement',
+      description: 'Framework for business partnerships with profit sharing and roles.',
+      details: 'This partnership agreement template includes: (1) Partnership name, purpose, and principal place of business (2) Term of partnership and conditions for dissolution (3) Capital contributions of each partner (4) Profit and loss allocation percentages (5) Distribution of profits schedule (6) Management structure and voting rights (7) Partner authority limitations (8) Meeting requirements and procedures (9) Bookkeeping and accounting procedures (10) Bank accounts and financial controls (11) Admission of new partners process (12) Voluntary and involuntary withdrawal provisions (13) Death or incapacity provisions (14) Dispute resolution procedures (15) Non-compete and confidentiality provisions.',
       category: 'legal',
       popular: false,
       icon: <Briefcase size={20} />
@@ -108,8 +109,8 @@ export default function Templates({ initialCategory = 'all' }: TemplatesProps) {
     {
       id: 'equipment-lease',
       title: 'Equipment Lease Agreement',
-      description: 'Document the terms for leasing equipment to businesses or individuals.',
-      details: 'Covers equipment description, lease duration, payment schedule, maintenance responsibilities, insurance requirements, and end-of-lease options.',
+      description: 'Contract for leasing business equipment with maintenance terms.',
+      details: 'This equipment lease agreement includes: (1) Detailed equipment description with serial numbers and condition (2) Lease term with commencement and expiration dates (3) Lease payment amounts and schedule (4) Security deposit requirements (5) Delivery, installation, and acceptance procedures (6) Equipment use restrictions (7) Maintenance and repair responsibilities (8) Insurance requirements (9) Risk of loss provisions (10) Warranty provisions (11) Default and remedies (12) Early termination options (13) End of lease options (purchase, renewal, return) (14) Equipment return conditions (15) Indemnification clauses (16) Assignment restrictions.',
       category: 'agreement',
       popular: false,
       icon: <FileText size={20} />
