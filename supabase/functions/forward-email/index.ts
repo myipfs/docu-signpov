@@ -51,7 +51,7 @@ serve(async (req) => {
 
     // Forward the email using Resend
     const { data, error } = await resend.emails.send({
-      from: `Forwarded <forwarding@yourdomain.com>`,
+      from: `Forwarded <no-reply@${Deno.env.get("RESEND_DOMAIN")}>`,
       to: emailData.forwarding_to,
       subject: `Fwd: ${payload.subject}`,
       text: `Original From: ${payload.from}\n\n${payload.text}`,
