@@ -36,6 +36,36 @@ export type Database = {
         }
         Relationships: []
       }
+      temporary_emails: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          expires_at: string
+          forwarding_to: string
+          id: string
+          temp_email: string
+          user_id: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          expires_at: string
+          forwarding_to: string
+          id?: string
+          temp_email: string
+          user_id?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          expires_at?: string
+          forwarding_to?: string
+          id?: string
+          temp_email?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
