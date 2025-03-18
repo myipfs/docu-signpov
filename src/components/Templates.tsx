@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { TemplateEditor } from './TemplateEditor';
 import { toast } from '@/utils/toast';
-import { TemplateCategories } from './template/TemplateCategories';
+import { TemplateCategories } from '@/components/template/TemplateCategories';
 import { TemplateGrid } from './template/TemplateGrid';
 import { Template } from '@/types/template';
 import { templates } from '@/data/templateData';
