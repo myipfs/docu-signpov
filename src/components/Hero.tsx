@@ -42,7 +42,7 @@ export default function Hero() {
               isVisible && "opacity-100 translate-y-0"
             )}
           >
-            Sign Documents <span className="text-gradient">Beautifully</span> and Securely
+            Sign Documents <span className="text-gradient">Forever Free</span> and Securely
           </h1>
 
           {/* Description with animation delay */}
@@ -52,7 +52,7 @@ export default function Hero() {
               isVisible && "opacity-100 translate-y-0"
             )}
           >
-            Create, upload, and sign documents with a beautifully designed platform that makes document signing a delightful experience. No subscriptions required.
+            Create, upload, and sign documents with our no-cost platform that makes document signing accessible to everyone. No subscriptions, no hidden fees.
           </p>
 
           {/* CTA buttons with animation delay */}

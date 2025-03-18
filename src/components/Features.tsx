@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -54,7 +53,7 @@ export default function Features() {
       description: 'All documents are encrypted and handled with the highest security standards.',
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 14V17M19 10V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V10M8 10V6C8 3.79086 9.79086 2 12 2C14.2091 2 16 3.79086 16 6V10M8 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 14V17M19 10V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.1046 5 20V10M8 10V6C8 3.79086 9.79086 2 12 2C14.2091 2 16 3.79086 16 6V10M8 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
     },
@@ -92,10 +91,10 @@ export default function Features() {
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">
-            <span className="text-gradient">Beautiful</span> Features
+            <span className="text-gradient">Forever Free</span> Features
           </h2>
           <p className="max-w-2xl mx-auto text-foreground/70">
-            Everything you need to sign documents online securely and efficiently
+            Everything you need to sign documents online securely and efficiently, without any cost
           </p>
         </div>
 
