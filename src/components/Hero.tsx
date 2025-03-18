@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { FileText, Mail, Lock, Signature } from 'lucide-react';
 
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false);
@@ -45,14 +46,14 @@ export default function Hero() {
             Sign Documents <span className="text-gradient">Forever Free</span> and Securely
           </h1>
 
-          {/* Description with animation delay */}
+          {/* Updated description with temporary email highlight */}
           <p 
             className={cn(
               "text-lg text-foreground/80 max-w-2xl mb-8 text-balance opacity-0 transform translate-y-4 transition-all duration-700 delay-200 ease-out",
               isVisible && "opacity-100 translate-y-0"
             )}
           >
-            Create, upload, and sign documents with our no-cost platform that makes document signing accessible to everyone. No subscriptions, no hidden fees.
+            Create, upload, and sign documents with our no-cost platform. Use temporary emails for enhanced privacy when sharing and receiving signed documents.
           </p>
 
           {/* CTA buttons with animation delay */}
@@ -70,7 +71,7 @@ export default function Hero() {
             </Button>
           </div>
 
-          {/* Preview Image with animation delay */}
+          {/* Enhanced Preview Image */}
           <div 
             className={cn(
               "w-full max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border opacity-0 transform translate-y-4 transition-all duration-1000 delay-400 ease-out",
@@ -83,20 +84,61 @@ export default function Hero() {
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              <div className="w-full text-xs text-center text-gray-500">Signpov Interface</div>
+              <div className="w-full text-xs text-center text-gray-500">Document Signing Interface</div>
             </div>
-            <div className="w-full aspect-[16/9] bg-white p-8 flex items-center justify-center">
-              <div className="w-full max-w-lg">
-                <div className="w-full h-12 bg-gray-100 rounded-lg mb-4"></div>
-                <div className="w-2/3 h-8 bg-gray-100 rounded-lg mb-8"></div>
-                <div className="space-y-3 mb-8">
-                  <div className="w-full h-4 bg-gray-100 rounded"></div>
-                  <div className="w-full h-4 bg-gray-100 rounded"></div>
-                  <div className="w-5/6 h-4 bg-gray-100 rounded"></div>
-                  <div className="w-full h-4 bg-gray-100 rounded"></div>
+            <div className="w-full bg-white p-8">
+              <div className="max-w-3xl mx-auto space-y-8">
+                {/* Document Header */}
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-primary" />
+                    <span className="font-medium">Contract_Document.pdf</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Mail className="w-4 h-4" />
+                    <span>Using temp-****@signdocs.temp</span>
+                  </div>
                 </div>
-                <div className="w-40 h-16 bg-primary/10 border-2 border-dashed border-primary/40 rounded-lg flex items-center justify-center mx-auto">
-                  <div className="text-xs text-primary/60 font-medium">Sign Here</div>
+
+                {/* Document Preview */}
+                <div className="space-y-4">
+                  <div className="h-8 bg-gray-100 w-2/3 rounded-lg"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-100 rounded w-full"></div>
+                    <div className="h-3 bg-gray-100 rounded w-full"></div>
+                    <div className="h-3 bg-gray-100 rounded w-5/6"></div>
+                  </div>
+                </div>
+
+                {/* Signature Area */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Signature Box */}
+                  <div className="border-2 border-dashed border-primary/40 rounded-lg p-6 relative bg-primary/5">
+                    <div className="absolute -top-3 left-4 bg-white px-2 text-xs text-foreground/50 flex items-center gap-1">
+                      <Signature className="w-3 h-3" />
+                      <span>Your Signature</span>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="w-40 h-12 mx-auto border-b-2 border-primary/30"></div>
+                      <p className="text-xs text-primary/60">Click to sign here</p>
+                    </div>
+                  </div>
+
+                  {/* Privacy Features */}
+                  <div className="space-y-3 flex flex-col justify-center">
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Lock className="w-3 h-3 text-primary" />
+                      </div>
+                      <span>End-to-end encrypted</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Mail className="w-3 h-3 text-primary" />
+                      </div>
+                      <span>Temporary email protection</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
