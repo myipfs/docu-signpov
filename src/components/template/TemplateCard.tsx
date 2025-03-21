@@ -9,7 +9,7 @@ import { Template } from '@/types/template';
 interface TemplateCardProps {
   template: Template;
   onEdit: (template: Template) => void;
-  onDownload: (templateId: string) => void;
+  onDownload: (template: Template) => void;
 }
 
 export const TemplateCard: React.FC<TemplateCardProps> = ({ 
@@ -48,7 +48,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             variant="outline" 
             size="sm" 
             className="rounded-lg flex-1"
-            onClick={() => onDownload(template.id)}
+            onClick={() => onDownload(template)}
           >
             <Download size={16} className="mr-2" />
             Download

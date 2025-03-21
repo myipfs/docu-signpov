@@ -6,7 +6,7 @@ import { Template } from '@/types/template';
 interface TemplateGridProps {
   templates: Template[];
   onEdit: (template: Template) => void;
-  onDownload: (templateId: string) => void;
+  onDownload: (template: Template) => void;
 }
 
 export const TemplateGrid: React.FC<TemplateGridProps> = ({
