@@ -7,39 +7,92 @@ export const generateTempEmail = () => {
 };
 
 export const createTemporaryEmail = async (forwardingTo: string) => {
-  const tempEmail = generateTempEmail();
-  const expiryDate = new Date();
-  expiryDate.setDate(expiryDate.getDate() + 30); // Expires in 30 days
+  try {
+    const tempEmail = generateTempEmail();
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 30); // Expires in 30 days
 
-  const { data, error } = await supabase
-    .from('temporary_emails')
-    .insert({
-      temp_email: tempEmail,
-      forwarding_to: forwardingTo,
-      expires_at: expiryDate.toISOString(),
-    })
-    .select()
-    .single();
+    // Make sure to include all required fields and set active to true explicitly
+    const { data, error } = await supabase
+      .from('temporary_emails')
+      .insert({
+        temp_email: tempEmail,
+        forwarding_to: forwardingTo,
+        expires_at: expiryDate.toISOString(),
+        active: true
+      })
+      .select()
+      .single();
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error creating temp email:", error);
+      throw error;
+    }
+    
+    // Add to localStorage to help remember temp emails
+    try {
+      const existingEmails = JSON.parse(localStorage.getItem('tempEmails') || '[]');
+      localStorage.setItem('tempEmails', JSON.stringify([...existingEmails, data]));
+    } catch (e) {
+      console.error("Error saving to localStorage:", e);
+    }
+    
+    return data;
+  } catch (error) {
+    console.error("Temp email creation failed:", error);
+    throw error;
+  }
 };
 
 export const getUserTemporaryEmails = async () => {
-  const { data, error } = await supabase
-    .from('temporary_emails')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    console.log("Fetching temporary emails...");
+    const { data, error } = await supabase
+      .from('temporary_emails')
+      .select('*')
+      .eq('active', true)
+      .order('created_at', { ascending: false });
 
-  if (error) throw error;
-  return data;
+    if (error) {
+      console.error("Error fetching temp emails:", error);
+      throw error;
+    }
+
+    console.log("Fetched emails:", data);
+    return data;
+  } catch (error) {
+    console.error("Error in getUserTemporaryEmails:", error);
+    throw error;
+  }
 };
 
 export const deleteTemporaryEmail = async (id: string) => {
-  const { error } = await supabase
-    .from('temporary_emails')
-    .delete()
-    .match({ id });
+  try {
+    const { error } = await supabase
+      .from('temporary_emails')
+      .update({ active: false })
+      .eq('id', id);
 
-  if (error) throw error;
+    if (error) {
+      console.error("Error deleting temp email:", error);
+      throw error;
+    }
+    
+    // Remove from localStorage
+    try {
+      const existingEmails = JSON.parse(localStorage.getItem('tempEmails') || '[]');
+      const updatedEmails = existingEmails.filter((email: any) => email.id !== id);
+      localStorage.setItem('tempEmails', JSON.stringify(updatedEmails));
+    } catch (e) {
+      console.error("Error updating localStorage:", e);
+    }
+  } catch (error) {
+    console.error("Error in deleteTemporaryEmail:", error);
+    throw error;
+  }
+};
+
+export const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text)
+    .catch(err => console.error('Failed to copy text: ', err));
 };
