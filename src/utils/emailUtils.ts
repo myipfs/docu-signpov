@@ -8,6 +8,7 @@ export const generateTempEmail = () => {
 
 export const createTemporaryEmail = async (forwardingTo: string) => {
   try {
+    console.log("Creating temporary email for:", forwardingTo);
     const tempEmail = generateTempEmail();
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 30); // Expires in 30 days
@@ -26,8 +27,10 @@ export const createTemporaryEmail = async (forwardingTo: string) => {
 
     if (error) {
       console.error("Error creating temp email:", error);
-      throw error;
+      throw new Error(`Failed to create temporary email: ${error.message}`);
     }
+    
+    console.log("Successfully created temporary email:", data);
     
     // Add to localStorage to help remember temp emails
     try {
@@ -55,7 +58,7 @@ export const getUserTemporaryEmails = async () => {
 
     if (error) {
       console.error("Error fetching temp emails:", error);
-      throw error;
+      throw new Error(`Failed to fetch temporary emails: ${error.message}`);
     }
 
     console.log("Fetched emails:", data);
@@ -68,6 +71,7 @@ export const getUserTemporaryEmails = async () => {
 
 export const deleteTemporaryEmail = async (id: string) => {
   try {
+    console.log("Deleting temporary email with ID:", id);
     const { error } = await supabase
       .from('temporary_emails')
       .update({ active: false })
@@ -75,8 +79,10 @@ export const deleteTemporaryEmail = async (id: string) => {
 
     if (error) {
       console.error("Error deleting temp email:", error);
-      throw error;
+      throw new Error(`Failed to delete temporary email: ${error.message}`);
     }
+    
+    console.log("Successfully deleted temporary email with ID:", id);
     
     // Remove from localStorage
     try {

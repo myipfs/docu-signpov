@@ -42,6 +42,11 @@ export function TempEmailManager() {
   useEffect(() => {
     if (error) {
       console.error("Query error:", error);
+      toast({
+        title: "Error",
+        description: `Failed to load temporary emails: ${(error as Error).message}`,
+        variant: "destructive"
+      });
     }
   }, [error]);
 
@@ -63,7 +68,7 @@ export function TempEmailManager() {
       console.error("Mutation error:", error);
       toast({
         title: "Error",
-        description: "Failed to create temporary email. Please try again.",
+        description: `Failed to create temporary email: ${(error as Error).message}`,
         variant: "destructive"
       });
     }
@@ -77,6 +82,13 @@ export function TempEmailManager() {
         title: "Email Deleted",
         description: "The temporary email has been deleted."
       });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `Failed to delete temporary email: ${(error as Error).message}`,
+        variant: "destructive"
+      });
     }
   });
 
@@ -86,6 +98,16 @@ export function TempEmailManager() {
       toast({
         title: "Error",
         description: "Please enter a forwarding email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(forwardingEmail)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
         variant: "destructive"
       });
       return;
@@ -129,12 +151,13 @@ export function TempEmailManager() {
               value={forwardingEmail}
               onChange={(e) => setForwardingEmail(e.target.value)}
               className="flex-1"
+              required
             />
             <Button 
               type="submit" 
               disabled={createMutation.isPending}
             >
-              Create Temp Email
+              {createMutation.isPending ? "Creating..." : "Create Temp Email"}
             </Button>
           </form>
 
@@ -157,7 +180,7 @@ export function TempEmailManager() {
                 <div key={email.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/10 transition-colors">
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-medium">{email.temp_email}</p>
+                      <p className="font-medium truncate max-w-xs">{email.temp_email}</p>
                       <Button 
                         variant="ghost" 
                         size="icon" 
@@ -167,7 +190,7 @@ export function TempEmailManager() {
                         {copied === email.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground truncate">
                       Forwards to: {email.forwarding_to}
                     </p>
                     <p className="text-sm text-muted-foreground">
@@ -188,7 +211,7 @@ export function TempEmailManager() {
                       onClick={() => deleteMutation.mutate(email.id)}
                       disabled={deleteMutation.isPending}
                     >
-                      Delete
+                      {deleteMutation.isPending && deleteMutation.variables === email.id ? "Deleting..." : "Delete"}
                     </Button>
                   </div>
                 </div>
@@ -215,13 +238,13 @@ export function TempEmailManager() {
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Temporary Email Address:</p>
                     <div className="flex items-center justify-between">
-                      <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
+                      <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm break-all">
                         {selectedEmail.temp_email}
                       </code>
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-8 w-8"
+                        className="h-8 w-8 shrink-0 ml-2"
                         onClick={() => handleCopy(selectedEmail.temp_email, "dialog")}
                       >
                         {copied === "dialog" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -231,7 +254,7 @@ export function TempEmailManager() {
                   
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Forwards To:</p>
-                    <p>{selectedEmail.forwarding_to}</p>
+                    <p className="break-all">{selectedEmail.forwarding_to}</p>
                   </div>
                   
                   <div>
@@ -252,6 +275,14 @@ export function TempEmailManager() {
                   You'll need it when sending documents for signature.
                 </p>
               </div>
+              
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={() => handleCopy(selectedEmail.temp_email, "dialog-full")}
+              >
+                {copied === "dialog-full" ? "Copied!" : "Copy Email Address"}
+              </Button>
             </div>
           )}
         </DialogContent>
