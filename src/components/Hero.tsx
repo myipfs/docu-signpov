@@ -43,7 +43,7 @@ export default function Hero() {
               isVisible && "opacity-100 translate-y-0"
             )}
           >
-            Sign Documents <span className="text-gradient">Forever Free</span> and Securely
+            Sign Documents Securely and <span className="text-gradient whitespace-nowrap">Forever Free</span>
           </h1>
 
           {/* Updated description with temporary email highlight */}
