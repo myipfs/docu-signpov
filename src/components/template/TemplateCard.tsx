@@ -29,14 +29,18 @@ export function TemplateCard({ template, onEdit, onDownload }: TemplateCardProps
             {template.description}
           </p>
           <div className="flex text-xs text-muted-foreground space-x-4">
-            <span className="flex items-center">
-              <Calendar className="h-3 w-3 mr-1" />
-              {template.date}
-            </span>
-            <span className="flex items-center">
-              <Clock className="h-3 w-3 mr-1" />
-              {template.readTime} min
-            </span>
+            {template.date && (
+              <span className="flex items-center">
+                <Calendar className="h-3 w-3 mr-1" />
+                {template.date}
+              </span>
+            )}
+            {template.readTime && (
+              <span className="flex items-center">
+                <Clock className="h-3 w-3 mr-1" />
+                {template.readTime} min
+              </span>
+            )}
           </div>
         </div>
       </CardContent>

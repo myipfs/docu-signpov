@@ -9,4 +9,6 @@ export interface Template {
   category: 'contract' | 'agreement' | 'form' | 'legal';
   popular: boolean;
   icon: ReactNode;
+  date?: string;
+  readTime?: number;
 }
