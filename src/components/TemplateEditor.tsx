@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/utils/toast';
 import { Pen, Save, X } from 'lucide-react';
 import { Template } from '@/types/template';
+import TextEditor from '@/components/TextEditor';
 
 interface TemplateEditorProps {
   template: Template;
@@ -17,8 +17,9 @@ interface TemplateEditorProps {
 
 export function TemplateEditor({ template, open, onClose, onSave }: TemplateEditorProps) {
   const [editedTemplate, setEditedTemplate] = useState<Template>({ ...template });
+  const [detailsContent, setDetailsContent] = useState(template.details);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedTemplate(prev => ({ ...prev, [name]: value }));
   };
@@ -34,7 +35,13 @@ export function TemplateEditor({ template, open, onClose, onSave }: TemplateEdit
       return;
     }
 
-    onSave(editedTemplate);
+    // Update the details with the content from the text editor
+    const updatedTemplate = {
+      ...editedTemplate,
+      details: detailsContent
+    };
+
+    onSave(updatedTemplate);
     toast({
       title: "Template updated",
       description: "Your template has been successfully updated.",
@@ -43,21 +50,21 @@ export function TemplateEditor({ template, open, onClose, onSave }: TemplateEdit
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="w-[90vw] sm:max-w-[600px] overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2">
             <Pen size={18} />
             Edit Template
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             Make changes to your template. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
         
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="title" className="text-right text-sm font-medium">
+        <div className="py-6 space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="title" className="text-sm font-medium">
               Title
             </label>
             <Input
@@ -65,39 +72,23 @@ export function TemplateEditor({ template, open, onClose, onSave }: TemplateEdit
               name="title"
               value={editedTemplate.title}
               onChange={handleChange}
-              className="col-span-3"
             />
           </div>
           
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="description" className="text-right text-sm font-medium">
+          <div className="space-y-2">
+            <label htmlFor="description" className="text-sm font-medium">
               Short Description
             </label>
             <Input
               id="description"
               name="description"
               value={editedTemplate.description}
-              onChange={handleChange} 
-              className="col-span-3"
-            />
-          </div>
-          
-          <div className="grid grid-cols-4 items-start gap-4">
-            <label htmlFor="details" className="text-right text-sm font-medium pt-2">
-              Details
-            </label>
-            <Textarea
-              id="details"
-              name="details"
-              value={editedTemplate.details}
               onChange={handleChange}
-              rows={5}
-              className="col-span-3"
             />
           </div>
           
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="category" className="text-right text-sm font-medium">
+          <div className="space-y-2">
+            <label htmlFor="category" className="text-sm font-medium">
               Category
             </label>
             <select
@@ -108,7 +99,7 @@ export function TemplateEditor({ template, open, onClose, onSave }: TemplateEdit
                 const value = e.target.value as Template["category"];
                 setEditedTemplate(prev => ({ ...prev, category: value }));
               }}
-              className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium"
+              className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium"
             >
               <option value="contract">Contract</option>
               <option value="agreement">Agreement</option>
@@ -117,26 +108,33 @@ export function TemplateEditor({ template, open, onClose, onSave }: TemplateEdit
             </select>
           </div>
           
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label className="text-right text-sm font-medium">
-              Popular
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="popular"
+              checked={editedTemplate.popular}
+              onChange={(e) => setEditedTemplate(prev => ({ ...prev, popular: e.target.checked }))}
+              className="rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <label htmlFor="popular" className="text-sm text-muted-foreground">
+              Mark as popular template
             </label>
-            <div className="col-span-3 flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="popular"
-                checked={editedTemplate.popular}
-                onChange={(e) => setEditedTemplate(prev => ({ ...prev, popular: e.target.checked }))}
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+          </div>
+          
+          <div className="space-y-2">
+            <label htmlFor="details" className="text-sm font-medium">
+              Details
+            </label>
+            <div className="border rounded-md overflow-hidden">
+              <TextEditor 
+                content={detailsContent} 
+                setContent={setDetailsContent} 
               />
-              <label htmlFor="popular" className="text-sm text-muted-foreground">
-                Mark as popular template
-              </label>
             </div>
           </div>
         </div>
         
-        <DialogFooter>
+        <SheetFooter className="pt-4">
           <Button variant="outline" onClick={onClose} className="gap-2">
             <X size={16} />
             Cancel
@@ -145,8 +143,8 @@ export function TemplateEditor({ template, open, onClose, onSave }: TemplateEdit
             <Save size={16} />
             Save Changes
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
