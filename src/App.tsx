@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import DocumentEditor from "./pages/DocumentEditor";
 import TemplatesPage from "./pages/TemplatesPage";
 import TemplateEditor from "./pages/TemplateEditor";
+import EmailSettings from "./pages/EmailSettings";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/editor" element={<DocumentEditor />} />
             <Route path="/templates" element={<TemplatesPage />} />
             <Route path="/templates/edit/:id" element={<TemplateEditor />} />
+            <Route path="/email-settings" element={<EmailSettings />} />
             {/* Catch all route for 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>

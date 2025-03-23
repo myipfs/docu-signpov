@@ -30,42 +30,60 @@ serve(async (req) => {
   try {
     const payload: EmailPayload = await req.json();
     
-    // Extract temp email from the 'to' field
-    const tempEmail = payload.to;
+    let recipientEmail = payload.to;
+    let isTemporaryEmail = false;
     
-    // Look up the forwarding address in our database
-    const { data: emailData, error: lookupError } = await supabase
-      .from('temporary_emails')
-      .select('forwarding_to')
-      .eq('temp_email', tempEmail)
-      .eq('active', true)
-      .single();
+    // Check if this is a temporary email that needs forwarding
+    if (payload.to.includes('@signdocs.temp')) {
+      isTemporaryEmail = true;
+      
+      // Look up the forwarding address in our database
+      const { data: emailData, error: lookupError } = await supabase
+        .from('temporary_emails')
+        .select('forwarding_to')
+        .eq('temp_email', payload.to)
+        .eq('active', true)
+        .single();
 
-    if (lookupError || !emailData) {
-      console.error('Error looking up forwarding address:', lookupError);
-      return new Response(
-        JSON.stringify({ error: 'Temporary email not found or inactive' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      if (lookupError || !emailData) {
+        console.error('Error looking up forwarding address:', lookupError);
+        return new Response(
+          JSON.stringify({ error: 'Temporary email not found or inactive' }),
+          { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Use the forwarding address
+      recipientEmail = emailData.forwarding_to;
     }
 
-    // Forward the email using Resend
+    // Send the email using Resend
+    const subject = isTemporaryEmail ? `Fwd: ${payload.subject}` : payload.subject;
+    const text = isTemporaryEmail ? 
+      `Original From: ${payload.from}\n\n${payload.text}` : 
+      payload.text;
+    const html = payload.html ? 
+      (isTemporaryEmail ? 
+        `<p><strong>Original From:</strong> ${payload.from}</p>${payload.html}` : 
+        payload.html) :
+      (isTemporaryEmail ?
+        `<p><strong>Original From:</strong> ${payload.from}</p><pre>${payload.text}</pre>` :
+        `<pre>${payload.text}</pre>`);
+
     const { data, error } = await resend.emails.send({
-      from: `Forwarded <no-reply@${Deno.env.get("RESEND_DOMAIN")}>`,
-      to: emailData.forwarding_to,
-      subject: `Fwd: ${payload.subject}`,
-      text: `Original From: ${payload.from}\n\n${payload.text}`,
-      html: payload.html ? 
-        `<p><strong>Original From:</strong> ${payload.from}</p>${payload.html}` :
-        `<p><strong>Original From:</strong> ${payload.from}</p><pre>${payload.text}</pre>`,
+      from: `${isTemporaryEmail ? 'Forwarded' : 'SignDocs'} <no-reply@${Deno.env.get("RESEND_DOMAIN")}>`,
+      to: recipientEmail,
+      subject: subject,
+      text: text,
+      html: html,
     });
 
     if (error) {
-      console.error('Error forwarding email:', error);
+      console.error('Error sending email:', error);
       throw error;
     }
 
-    console.log('Email forwarded successfully:', data);
+    console.log('Email sent successfully:', data);
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

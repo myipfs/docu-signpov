@@ -4,13 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { Copy, Check, AlertCircle } from "lucide-react";
+import { Copy, Check, AlertCircle, Shield } from "lucide-react";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -138,12 +139,23 @@ export function TempEmailManager() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Temporary Email Addresses</CardTitle>
+          <CardTitle>Optional Temporary Email Addresses</CardTitle>
           <CardDescription>
-            Create temporary email addresses to protect your privacy. All emails will be forwarded to your real address.
+            Create temporary email addresses for enhanced privacy. All emails sent to these addresses will be forwarded to your real email.
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="p-4 border rounded-lg bg-amber-50 border-amber-200 flex items-start gap-3 mb-6">
+            <Shield className="h-5 w-5 text-amber-700 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-amber-700 mb-1">Optional Privacy Feature</p>
+              <p className="text-sm text-amber-800">
+                Temporary emails are <strong>optional</strong>. You can use your regular email address by default, 
+                or create temporary forwarding addresses when you need extra privacy.
+              </p>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="flex gap-4 mb-6">
             <Input
               type="email"
@@ -219,6 +231,11 @@ export function TempEmailManager() {
             </div>
           )}
         </CardContent>
+        <CardFooter className="bg-muted/30 flex justify-center p-4">
+          <p className="text-center text-sm text-muted-foreground max-w-md">
+            Temporary emails provide an extra layer of privacy for sensitive documents. Use them when you want to keep your personal email address private.
+          </p>
+        </CardFooter>
       </Card>
 
       {/* Email Details Dialog */}
@@ -271,8 +288,7 @@ export function TempEmailManager() {
               
               <div className="bg-amber-50 border-amber-200 border p-3 rounded-lg">
                 <p className="text-sm text-amber-800">
-                  <strong>Important:</strong> Save this email address somewhere secure. 
-                  You'll need it when sending documents for signature.
+                  <strong>Note:</strong> This is an optional privacy feature. You can still use your regular email for document signing.
                 </p>
               </div>
               
