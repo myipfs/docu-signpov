@@ -1,69 +1,78 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Download, Pen } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Template } from '@/types/template';
+import { Button } from '@/components/ui/button';
+import { Calendar, Clock, Download, Edit } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface TemplateCardProps {
   template: Template;
-  onEdit: (template: Template) => void;
-  onDownload: (template: Template) => void;
+  onEdit?: (template: Template) => void;
+  onDownload?: (template: Template) => void;
 }
 
-export const TemplateCard: React.FC<TemplateCardProps> = ({ 
-  template, 
-  onEdit, 
-  onDownload 
-}) => {
+export function TemplateCard({ template, onEdit, onDownload }: TemplateCardProps) {
   return (
-    <Card 
-      className={cn(
-        "glass-card overflow-hidden transition-all duration-200 hover:shadow-md template-card-hover",
-        template.popular && "border-primary/20"
-      )}
-    >
-      <div className="h-3 w-full bg-gradient-to-r from-primary/60 to-blue-500/60"></div>
-      
-      <CardContent className="p-6">
-        {template.popular && (
-          <div className="absolute top-5 right-5">
-            <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-              Popular
-            </span>
-          </div>
-        )}
-        
-        <div className="mb-4 bg-primary/10 text-primary p-3 rounded-lg inline-block">
+    <Card className="overflow-hidden transition-all duration-200 group hover:shadow-md">
+      <CardContent className="p-0">
+        <div 
+          className="h-40 bg-gradient-to-b from-primary/10 to-primary/5 flex items-center justify-center p-6"
+        >
           {template.icon}
         </div>
-        
-        <h3 className="text-xl font-medium mb-2">{template.title}</h3>
-        <p className="text-foreground/70 text-sm mb-3">{template.description}</p>
-        <p className="text-foreground/60 text-xs mb-6 line-clamp-3">{template.details}</p>
-        
-        <div className="flex space-x-3 mt-auto">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="rounded-lg flex-1"
-            onClick={() => onDownload(template)}
-          >
-            <Download size={16} className="mr-2" />
-            Download
-          </Button>
-          <Button 
-            variant="default" 
-            size="sm" 
-            className="rounded-lg flex-1"
-            onClick={() => onEdit(template)}
-          >
-            <Pen size={16} className="mr-2" />
-            Edit
-          </Button>
+        <div className="p-4">
+          <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+            {template.title}
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+            {template.description}
+          </p>
+          <div className="flex text-xs text-muted-foreground space-x-4">
+            <span className="flex items-center">
+              <Calendar className="h-3 w-3 mr-1" />
+              {template.date}
+            </span>
+            <span className="flex items-center">
+              <Clock className="h-3 w-3 mr-1" />
+              {template.readTime} min
+            </span>
+          </div>
         </div>
       </CardContent>
+      <CardFooter className="px-4 py-3 bg-muted/30 flex justify-between">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-xs"
+          onClick={() => onEdit && onEdit(template)}
+        >
+          <Edit className="h-3.5 w-3.5 mr-1" />
+          Customize
+        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs"
+            onClick={() => onDownload && onDownload(template)}
+          >
+            <Download className="h-3.5 w-3.5 mr-1" />
+            Download
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="text-xs"
+            asChild
+          >
+            <Link to={`/templates/edit/${template.id}`}>
+              <Edit className="h-3.5 w-3.5 mr-1" />
+              Edit Online
+            </Link>
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
-};
+}
