@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -323,7 +322,7 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
         </DialogHeader>
         
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-          <TabsList className="grid grid-cols-4">
+          <TabsList className={`grid ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'}`}>
             <TabsTrigger value="draw">Draw</TabsTrigger>
             <TabsTrigger value="type">Type</TabsTrigger>
             <TabsTrigger value="upload">Upload</TabsTrigger>
@@ -391,6 +390,16 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+            
+            {!isAuthenticated && (
+              <div className="mt-4 pt-2 border-t text-xs text-muted-foreground">
+                <p>Want to save this signature for future use?</p>
+                <p className="mt-1">
+                  <a href="/dashboard" className="text-primary hover:underline">Create an account</a> 
+                  {" "}to store signatures and access them anytime.
+                </p>
               </div>
             )}
           </TabsContent>

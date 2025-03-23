@@ -12,6 +12,7 @@ import DocumentEditor from "./pages/DocumentEditor";
 import TemplatesPage from "./pages/TemplatesPage";
 import TemplateEditor from "./pages/TemplateEditor";
 import EmailSettings from "./pages/EmailSettings";
+import QuickSign from "./pages/QuickSign";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/sign/:id" element={<SignDocument />} />
+            <Route path="/quick-sign" element={<QuickSign />} />
             <Route path="/editor" element={<DocumentEditor />} />
             <Route path="/templates" element={<TemplatesPage />} />
             <Route path="/templates/edit/:id" element={<TemplateEditor />} />
