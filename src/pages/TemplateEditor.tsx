@@ -7,15 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, FileText, Download, Share2, ArrowLeft } from 'lucide-react';
+import { Save, FileText, Download, Share2, ArrowLeft, LogIn } from 'lucide-react';
 import TextEditor from '@/components/TextEditor';
 import { toast } from '@/utils/toast';
 import { Template } from '@/types/template';
 import { templates } from '@/data/templateData';
+import { useSession } from '@/context/SessionContext';
 
 const TemplateEditor = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { session } = useSession();
+  const isAuthenticated = !!session?.user;
   
   const [template, setTemplate] = useState<Template | null>(null);
   const [documentTitle, setDocumentTitle] = useState('');
@@ -46,6 +49,15 @@ const TemplateEditor = () => {
   }, [id, navigate]);
 
   const handleSave = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in or create an account to save documents.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // In a real app, this would save to Supabase
     toast({
       title: "Document saved",
@@ -76,11 +88,25 @@ const TemplateEditor = () => {
   };
 
   const handleShare = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in or create an account to share documents.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // In a real app, this would create a sharing link
     toast({
       title: "Share link created",
       description: "A sharing link has been copied to your clipboard.",
     });
+  };
+
+  const handleLoginRedirect = () => {
+    // Save current state to localStorage or URL params if needed
+    navigate('/auth', { state: { returnTo: window.location.pathname } });
   };
 
   const handleBackToTemplates = () => {
@@ -352,17 +378,26 @@ ${template.details}`;
             </div>
             
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleShare}>
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button>
+              {!isAuthenticated ? (
+                <Button variant="outline" size="sm" onClick={handleLoginRedirect}>
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Login to Save
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" onClick={handleShare}>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    Share
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleSave}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save
+                  </Button>
+                </>
+              )}
               <Button variant="outline" size="sm" onClick={handleDownload}>
                 <Download className="mr-2 h-4 w-4" />
                 Download
-              </Button>
-              <Button size="sm" onClick={handleSave}>
-                <Save className="mr-2 h-4 w-4" />
-                Save
               </Button>
             </div>
           </div>

@@ -52,7 +52,7 @@ export function TemplateCard({ template, onEdit, onDownload }: TemplateCardProps
           onClick={() => onEdit && onEdit(template)}
         >
           <Edit className="h-3.5 w-3.5 mr-1" />
-          Customize
+          Edit
         </Button>
         <div className="flex gap-2">
           <Button

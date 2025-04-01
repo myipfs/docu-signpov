@@ -13,6 +13,7 @@ import TemplatesPage from "./pages/TemplatesPage";
 import TemplateEditor from "./pages/TemplateEditor";
 import EmailSettings from "./pages/EmailSettings";
 import QuickSign from "./pages/QuickSign";
+import { SessionProvider } from "./context/SessionContext";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -21,27 +22,29 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        {/* Toast notifications */}
-        <Toaster />
-        <Sonner />
-        
-        {/* Router setup */}
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/sign/:id" element={<SignDocument />} />
-            <Route path="/quick-sign" element={<QuickSign />} />
-            <Route path="/editor" element={<DocumentEditor />} />
-            <Route path="/templates" element={<TemplatesPage />} />
-            <Route path="/templates/edit/:id" element={<TemplateEditor />} />
-            <Route path="/email-settings" element={<EmailSettings />} />
-            {/* Catch all route for 404 */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <SessionProvider>
+        <TooltipProvider>
+          {/* Toast notifications */}
+          <Toaster />
+          <Sonner />
+          
+          {/* Router setup */}
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/sign/:id" element={<SignDocument />} />
+              <Route path="/quick-sign" element={<QuickSign />} />
+              <Route path="/editor" element={<DocumentEditor />} />
+              <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/templates/edit/:id" element={<TemplateEditor />} />
+              <Route path="/email-settings" element={<EmailSettings />} />
+              {/* Catch all route for 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 };
