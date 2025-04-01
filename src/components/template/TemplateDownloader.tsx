@@ -2,7 +2,7 @@
 import React from 'react';
 import { Template } from '@/types/template';
 import { toast } from '@/utils/toast';
-import { generateTemplateContent } from '@/utils/templateGenerators';
+import { generateTemplateContent } from '@/utils/templates';
 
 export const useTemplateDownloader = () => {
   const handleDownload = (template: Template) => {

@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/utils/toast';
 import { Template } from '@/types/template';
 import { useSession } from '@/context/SessionContext';
-import { generateTemplateContent } from '@/utils/templateGenerators';
+import { generateTemplateContent } from '@/utils/templates';
 
 export const useTemplateEditor = (templateId: string | undefined, templates: Template[]) => {
   const navigate = useNavigate();
