@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { supabaseClient } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SessionContextType {
   session: Session | null;
@@ -22,14 +22,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     // Get the current session
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setSession(session);
       setUser(session?.user ?? null);
     });
