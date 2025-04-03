@@ -38,12 +38,6 @@ export function SignatureField({
   const { isAuthenticated, encryptData } = useEncryption();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setIsAuthenticated(!!data.session);
-    };
-    
-    checkAuth();
   }, []);
 
   const handleSign = () => {
