@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+
+import React, { useState } from 'react';
 import { toast } from '@/utils/toast';
-import { Trash2, Pencil, Move, Check } from 'lucide-react';
 import { SignaturePad } from './SignaturePad';
 import { supabase } from '@/integrations/supabase/client';
 import { useEncryption } from '@/hooks/useEncryption';
+import { useDraggable } from '@/hooks/useDraggable';
+import { SignatureDisplay } from './signature/SignatureDisplay';
+import { SignatureFieldControls } from './signature/SignatureFieldControls';
+import { SignButton } from './signature/SignButton';
 
 interface SignatureFieldProps {
   id: string;
@@ -32,13 +35,16 @@ export function SignatureField({
   readOnly = false
 }: SignatureFieldProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
   const [isSignaturePadOpen, setIsSignaturePadOpen] = useState(false);
   const { isAuthenticated, encryptData } = useEncryption();
-
-  useEffect(() => {
-  }, []);
+  
+  const { isDragging, handleMoveStart } = useDraggable({
+    initialPosition: position,
+    onPositionChange: onMove,
+    elementId: `signature-field-${id}`,
+    disabled: readOnly || !onMove
+  });
 
   const handleSign = () => {
     if (readOnly) return;
@@ -77,40 +83,6 @@ export function SignatureField({
     toast.success('Signature field removed');
   };
 
-  const handleMoveStart = () => {
-    if (readOnly || !onMove) return;
-    
-    setIsDragging(true);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMoveEnd);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !onMove) return;
-    
-    const x = e.clientX;
-    const y = e.clientY;
-    
-    const element = document.getElementById(`signature-field-${id}`);
-    if (element) {
-      element.style.left = `${x}px`;
-      element.style.top = `${y}px`;
-    }
-  };
-
-  const handleMoveEnd = (e: MouseEvent) => {
-    if (!isDragging || !onMove) return;
-    
-    setIsDragging(false);
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMoveEnd);
-    
-    const x = e.clientX;
-    const y = e.clientY;
-    
-    onMove({ x, y, page: position.page });
-  };
-
   return (
     <>
       <div
@@ -131,61 +103,23 @@ export function SignatureField({
             <p className="text-xs font-medium text-foreground/70">
               {name} {recipientName ? `(${recipientName})` : ''}
             </p>
-            {!readOnly && (
-              <div className="flex gap-1">
-                {!isSigned && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={() => setIsEditing(!isEditing)}
-                    >
-                      <Pencil className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon" 
-                      className="h-6 w-6 cursor-grab"
-                      onMouseDown={handleMoveStart}
-                    >
-                      <Move className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={handleDelete}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            )}
+            
+            <SignatureFieldControls 
+              isVisible={!readOnly && !isSigned}
+              onEdit={() => setIsEditing(!isEditing)}
+              onMoveStart={handleMoveStart}
+              onDelete={handleDelete}
+            />
           </div>
           
-          {isSigned ? (
-            <div className="py-2 px-4 bg-white rounded border">
-              {signature ? (
-                <img src={signature} alt="Signature" className="max-h-16" />
-              ) : (
-                <div className="font-signature text-lg">{recipientName}</div>
-              )}
-              <div className="flex items-center text-xs text-green-600 mt-1">
-                <Check className="h-3 w-3 mr-1" />
-                Signed
-              </div>
-            </div>
-          ) : (
-            <Button
-              variant="outline"
-              className="h-16 border-dashed border-primary/50 justify-start font-normal text-muted-foreground hover:text-primary"
-              onClick={handleSign}
-              disabled={readOnly}
-            >
-              Click to sign here
-            </Button>
+          <SignatureDisplay 
+            signature={signature}
+            recipientName={recipientName}
+            isSigned={isSigned}
+          />
+          
+          {!isSigned && (
+            <SignButton onClick={handleSign} disabled={readOnly} />
           )}
         </div>
       </div>
