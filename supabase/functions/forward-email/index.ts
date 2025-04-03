@@ -71,7 +71,7 @@ serve(async (req) => {
         `<pre>${payload.text}</pre>`);
 
     const { data, error } = await resend.emails.send({
-      from: `${isTemporaryEmail ? 'Forwarded' : 'SignDocs'} <no-reply@${Deno.env.get("RESEND_DOMAIN")}>`,
+      from: `${isTemporaryEmail ? 'Forwarded' : 'SignDocs'} <support@signpov.com>`,
       to: recipientEmail,
       subject: subject,
       text: text,
