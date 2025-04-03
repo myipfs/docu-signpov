@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/utils/toast';
 import { Trash2, Pencil, Move, Check } from 'lucide-react';
 import { SignaturePad } from './SignaturePad';
 import { supabase } from '@/integrations/supabase/client';
+import { signatureEncryption } from '@/utils/encryption';
 
 interface SignatureFieldProps {
   id: string;
@@ -37,7 +37,6 @@ export function SignatureField({
   const [isSignaturePadOpen, setIsSignaturePadOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check auth status when component mounts
   useEffect(() => {
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
@@ -52,12 +51,29 @@ export function SignatureField({
     setIsSignaturePadOpen(true);
   };
 
-  const handleSaveSignature = (signatureDataUrl: string) => {
-    setSignature(signatureDataUrl);
-    if (onSign) {
-      onSign();
+  const handleSaveSignature = async (signatureDataUrl: string) => {
+    try {
+      if (isAuthenticated) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.id) {
+          const encryptedSignature = await signatureEncryption.encrypt(signatureDataUrl, session.user.id);
+          setSignature(signatureDataUrl);
+          if (onSign) {
+            onSign();
+          }
+        }
+      } else {
+        setSignature(signatureDataUrl);
+        if (onSign) {
+          onSign();
+        }
+      }
+      
+      toast.success('Signature added successfully!');
+    } catch (error) {
+      console.error('Error processing signature:', error);
+      toast.error('Failed to process signature');
     }
-    toast.success('Signature added successfully!');
   };
 
   const handleDelete = () => {
@@ -78,12 +94,9 @@ export function SignatureField({
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging || !onMove) return;
     
-    // Calculate position relative to document
-    // This is a simplification - in a real app you'd need to account for scroll and document position
     const x = e.clientX;
     const y = e.clientY;
     
-    // Update the preview position (we'll only commit on mouseup)
     const element = document.getElementById(`signature-field-${id}`);
     if (element) {
       element.style.left = `${x}px`;
@@ -98,11 +111,9 @@ export function SignatureField({
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMoveEnd);
     
-    // Calculate final position
     const x = e.clientX;
     const y = e.clientY;
     
-    // Commit the position change
     onMove({ x, y, page: position.page });
   };
 

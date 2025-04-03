@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/utils/toast';
 import { Eraser, Download, Upload, Check, Save } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { signatureEncryption } from '@/utils/encryption';
 
 interface SignaturePadProps {
   open: boolean;
@@ -15,7 +16,6 @@ interface SignaturePadProps {
   initialName?: string;
 }
 
-// Define the signature type to match the database schema
 interface SavedSignature {
   id: string;
   signature_data: string;
@@ -40,7 +40,6 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
   const [isDrawn, setIsDrawn] = useState(false);
   const [uploadedSignature, setUploadedSignature] = useState<string | null>(null);
   
-  // Check if user is authenticated and load their saved signatures
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -60,6 +59,12 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
   const loadSavedSignatures = async () => {
     try {
       setIsLoading(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) {
+        throw new Error('User not authenticated');
+      }
+      
       const { data, error } = await supabase
         .from('signatures')
         .select('*')
@@ -69,10 +74,27 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
         throw error;
       }
       
-      setSavedSignatures(data || []);
+      const decryptedSignatures = await Promise.all(
+        (data || []).map(async (signature) => {
+          try {
+            const decryptedData = await signatureEncryption.decrypt(signature.signature_data, session.user.id);
+            return {
+              ...signature,
+              signature_data: decryptedData
+            };
+          } catch (decryptError) {
+            console.error('Failed to decrypt signature:', decryptError);
+            return {
+              ...signature,
+              signature_data: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iNTAiPjx0ZXh0IHg9IjEwIiB5PSIzMCIgZmlsbD0icmVkIj5EZWNyeXB0aW9uIGVycm9yPC90ZXh0Pjwvc3ZnPg=='
+            };
+          }
+        })
+      );
       
-      // Set the default signature as selected if it exists
-      const defaultSignature = data?.find(sig => sig.is_default);
+      setSavedSignatures(decryptedSignatures || []);
+      
+      const defaultSignature = decryptedSignatures?.find(sig => sig.is_default);
       if (defaultSignature) {
         setSelectedSignatureId(defaultSignature.id);
       }
@@ -174,13 +196,13 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     try {
       setIsLoading(true);
       
-      // Check for user session to get user_id
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user?.id) {
         throw new Error('User not authenticated');
       }
       
-      // If isDefault is true, we need to update all other signatures to not be default
+      const encryptedSignature = await signatureEncryption.encrypt(signatureDataUrl, session.user.id);
+      
       if (isDefault) {
         await supabase
           .from('signatures')
@@ -191,7 +213,7 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
       const { data, error } = await supabase
         .from('signatures')
         .insert({
-          signature_data: signatureDataUrl,
+          signature_data: encryptedSignature,
           name: signatureName || typedName || null,
           is_default: isDefault,
           user_id: session.user.id
@@ -201,9 +223,8 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
       
       if (error) throw error;
       
-      toast.success('Signature saved to your account');
+      toast.success('Signature saved securely to your account');
       
-      // Refresh the saved signatures list
       loadSavedSignatures();
       
     } catch (error) {
@@ -217,7 +238,6 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
   const handleSave = async () => {
     let signatureDataUrl: string | null = null;
     
-    // If the saved signatures tab is active and a signature is selected
     if (activeTab === 'saved' && selectedSignatureId) {
       const selectedSignature = savedSignatures.find(sig => sig.id === selectedSignatureId);
       if (selectedSignature) {
@@ -249,7 +269,6 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
       return;
     }
     
-    // Save to database if the user is authenticated and has checked the save option
     if (isAuthenticated && saveToAccount && activeTab !== 'saved') {
       await saveSignatureToDatabase(signatureDataUrl);
     }
@@ -262,13 +281,11 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     try {
       setIsLoading(true);
       
-      // First set all signatures to not default
       await supabase
         .from('signatures')
         .update({ is_default: false })
         .not('id', 'is', null);
       
-      // Then set the selected one as default
       const { error } = await supabase
         .from('signatures')
         .update({ is_default: true })
