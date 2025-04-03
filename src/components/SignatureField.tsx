@@ -4,7 +4,7 @@ import { toast } from '@/utils/toast';
 import { Trash2, Pencil, Move, Check } from 'lucide-react';
 import { SignaturePad } from './SignaturePad';
 import { supabase } from '@/integrations/supabase/client';
-import { signatureEncryption } from '@/utils/encryption';
+import { useEncryption } from '@/hooks/useEncryption';
 
 interface SignatureFieldProps {
   id: string;
@@ -35,7 +35,7 @@ export function SignatureField({
   const [isDragging, setIsDragging] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
   const [isSignaturePadOpen, setIsSignaturePadOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, encryptData } = useEncryption();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -56,7 +56,7 @@ export function SignatureField({
       if (isAuthenticated) {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user?.id) {
-          const encryptedSignature = await signatureEncryption.encrypt(signatureDataUrl, session.user.id);
+          const encryptedSignature = await encryptData(signatureDataUrl);
           setSignature(signatureDataUrl);
           if (onSign) {
             onSign();
