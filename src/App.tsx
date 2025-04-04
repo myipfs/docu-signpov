@@ -14,6 +14,13 @@ import TemplateEditor from "./pages/TemplateEditor";
 import EmailSettings from "./pages/EmailSettings";
 import QuickSign from "./pages/QuickSign";
 import { SessionProvider } from "./context/SessionContext";
+import Encryption from "./pages/Encryption";
+import FeaturesPage from "./pages/Features";
+import HowItWorks from "./pages/HowItWorks";
+import Pricing from "./pages/Pricing";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -39,6 +46,16 @@ const App = () => {
               <Route path="/templates" element={<TemplatesPage />} />
               <Route path="/templates/edit/:id" element={<TemplateEditor />} />
               <Route path="/email-settings" element={<EmailSettings />} />
+              
+              {/* New pages */}
+              <Route path="/encryption" element={<Encryption />} />
+              <Route path="/features" element={<FeaturesPage />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              
               {/* Catch all route for 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>

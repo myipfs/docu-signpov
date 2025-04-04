@@ -19,13 +19,18 @@ const Footer = () => {
               <h4 className="text-sm font-medium mb-3">Product</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/" className="text-sm text-foreground/70 hover:text-foreground">
+                  <Link to="/features" className="text-sm text-foreground/70 hover:text-foreground">
                     Features
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="text-sm text-foreground/70 hover:text-foreground">
+                  <Link to="/pricing" className="text-sm text-foreground/70 hover:text-foreground">
                     Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/encryption" className="text-sm text-foreground/70 hover:text-foreground">
+                    Security
                   </Link>
                 </li>
               </ul>
@@ -35,12 +40,12 @@ const Footer = () => {
               <h4 className="text-sm font-medium mb-3">Resources</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/" className="text-sm text-foreground/70 hover:text-foreground">
-                    Documentation
+                  <Link to="/how-it-works" className="text-sm text-foreground/70 hover:text-foreground">
+                    How It Works
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="text-sm text-foreground/70 hover:text-foreground">
+                  <Link to="/contact" className="text-sm text-foreground/70 hover:text-foreground">
                     Support
                   </Link>
                 </li>
@@ -51,12 +56,12 @@ const Footer = () => {
               <h4 className="text-sm font-medium mb-3">Legal</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/" className="text-sm text-foreground/70 hover:text-foreground">
+                  <Link to="/privacy-policy" className="text-sm text-foreground/70 hover:text-foreground">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="text-sm text-foreground/70 hover:text-foreground">
+                  <Link to="/terms-of-service" className="text-sm text-foreground/70 hover:text-foreground">
                     Terms of Service
                   </Link>
                 </li>
@@ -67,7 +72,7 @@ const Footer = () => {
         
         <div className="border-t mt-8 pt-6">
           <p className="text-sm text-foreground/60 text-center">
-            &copy; {new Date().getFullYear()} Signpov. All rights reserved.
+            &copy; {new Date().getFullYear()} SignPov Inc. All rights reserved.
           </p>
         </div>
       </div>
