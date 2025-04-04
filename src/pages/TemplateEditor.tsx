@@ -22,7 +22,11 @@ const TemplateEditor = () => {
     handleSave,
     handleDownload,
     handleShare,
-    handleLoginRedirect
+    handleLoginRedirect,
+    isSaving,
+    isSharing,
+    documentId,
+    shareUrl
   } = useTemplateEditor(id, templates);
 
   return (
@@ -38,6 +42,10 @@ const TemplateEditor = () => {
             handleShare={handleShare}
             handleDownload={handleDownload}
             handleLoginRedirect={handleLoginRedirect}
+            isSaving={isSaving}
+            isSharing={isSharing}
+            documentId={documentId}
+            shareUrl={shareUrl}
           />
           
           <TemplateEditorContent
