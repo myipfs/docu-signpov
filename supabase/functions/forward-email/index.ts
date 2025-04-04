@@ -22,22 +22,28 @@ interface EmailPayload {
 }
 
 serve(async (req) => {
+  console.log(`[${new Date().toISOString()}] Received ${req.method} request to forward-email function`);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log(`[${new Date().toISOString()}] Handling OPTIONS request`);
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const payload: EmailPayload = await req.json();
+    console.log(`[${new Date().toISOString()}] Processing email to: ${payload.to}, subject: ${payload.subject}`);
     
     let recipientEmail = payload.to;
     let isTemporaryEmail = false;
     
     // Check if this is a temporary email that needs forwarding
     if (payload.to.includes('@signdocs.temp')) {
+      console.log(`[${new Date().toISOString()}] Temporary email detected: ${payload.to}`);
       isTemporaryEmail = true;
       
       // Look up the forwarding address in our database
+      console.log(`[${new Date().toISOString()}] Looking up forwarding address for: ${payload.to}`);
       const { data: emailData, error: lookupError } = await supabase
         .from('temporary_emails')
         .select('forwarding_to')
@@ -45,8 +51,16 @@ serve(async (req) => {
         .eq('active', true)
         .single();
 
-      if (lookupError || !emailData) {
-        console.error('Error looking up forwarding address:', lookupError);
+      if (lookupError) {
+        console.error(`[${new Date().toISOString()}] Database lookup error:`, lookupError);
+        return new Response(
+          JSON.stringify({ error: 'Temporary email not found or inactive', details: lookupError }),
+          { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (!emailData) {
+        console.error(`[${new Date().toISOString()}] No forwarding address found for: ${payload.to}`);
         return new Response(
           JSON.stringify({ error: 'Temporary email not found or inactive' }),
           { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -55,6 +69,7 @@ serve(async (req) => {
       
       // Use the forwarding address
       recipientEmail = emailData.forwarding_to;
+      console.log(`[${new Date().toISOString()}] Email will be forwarded to: ${recipientEmail}`);
     }
 
     // Send the email using Resend
@@ -70,6 +85,7 @@ serve(async (req) => {
         `<p><strong>Original From:</strong> ${payload.from}</p><pre>${payload.text}</pre>` :
         `<pre>${payload.text}</pre>`);
 
+    console.log(`[${new Date().toISOString()}] Sending email to ${recipientEmail}`);
     const { data, error } = await resend.emails.send({
       from: `${isTemporaryEmail ? 'Forwarded' : 'SignDocs'} <support@signpov.com>`,
       to: recipientEmail,
@@ -79,20 +95,27 @@ serve(async (req) => {
     });
 
     if (error) {
-      console.error('Error sending email:', error);
+      console.error(`[${new Date().toISOString()}] Error sending email:`, error);
       throw error;
     }
 
-    console.log('Email sent successfully:', data);
+    console.log(`[${new Date().toISOString()}] Email sent successfully:`, data);
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
   } catch (error) {
-    console.error('Error in forward-email function:', error);
+    console.error(`[${new Date().toISOString()}] Error in forward-email function:`, error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: errorMessage,
+        stack: errorStack,
+        timestamp: new Date().toISOString()
+      }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
