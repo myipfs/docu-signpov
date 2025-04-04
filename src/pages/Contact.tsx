@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mail, Phone, MessageSquare, CheckCircle } from 'lucide-react';
+import { Mail, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -42,44 +42,18 @@ const Contact = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
             {/* Contact Options */}
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1">
               <div className="glass-card p-6 rounded-xl">
                 <div className="bg-primary/10 text-primary p-3 rounded-lg inline-block mb-4">
                   <Mail className="h-6 w-6" />
                 </div>
-                <h3 className="text-lg font-medium mb-2">Email</h3>
+                <h3 className="text-lg font-medium mb-2">Email Support</h3>
                 <p className="text-foreground/70 mb-4">
-                  Our friendly team is here to help.
+                  Our support team is available 24/7.
                 </p>
                 <a href="mailto:support@signpov.com" className="text-primary font-medium hover:underline">
                   support@signpov.com
                 </a>
-              </div>
-              
-              <div className="glass-card p-6 rounded-xl">
-                <div className="bg-primary/10 text-primary p-3 rounded-lg inline-block mb-4">
-                  <Phone className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">Phone</h3>
-                <p className="text-foreground/70 mb-4">
-                  Mon-Fri from 9AM to 5PM (EST).
-                </p>
-                <a href="tel:+18005551234" className="text-primary font-medium hover:underline">
-                  +1 (800) 555-1234
-                </a>
-              </div>
-              
-              <div className="glass-card p-6 rounded-xl">
-                <div className="bg-primary/10 text-primary p-3 rounded-lg inline-block mb-4">
-                  <MessageSquare className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">Live Chat</h3>
-                <p className="text-foreground/70 mb-4">
-                  Available during business hours.
-                </p>
-                <Button variant="outline" size="sm" className="text-primary">
-                  Start Chat
-                </Button>
               </div>
             </div>
             
@@ -187,15 +161,15 @@ const Contact = () => {
               <h3 className="text-lg font-medium mb-2">How long does it take to get a response?</h3>
               <p className="text-foreground/70">
                 We aim to respond to all inquiries within 24 hours during business days.
-                For urgent matters, please use our live chat option.
+                For urgent matters, please include "URGENT" in your email subject.
               </p>
             </div>
             
             <div className="glass-card p-6 rounded-xl">
-              <h3 className="text-lg font-medium mb-2">Do you offer phone support?</h3>
+              <h3 className="text-lg font-medium mb-2">What are your support hours?</h3>
               <p className="text-foreground/70">
-                Yes, phone support is available Monday through Friday, 9AM to 5PM Eastern Time.
-                Our support team can be reached at +1 (800) 555-1234.
+                Our email support team is available 24/7. You can reach us anytime at
+                support@signpov.com.
               </p>
             </div>
             

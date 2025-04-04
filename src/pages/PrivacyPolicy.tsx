@@ -125,7 +125,7 @@ const PrivacyPolicy = () => {
             <p>
               SignPov Inc.<br />
               Email: privacy@signpov.com<br />
-              Address: 123 Signature Lane, Suite 456, San Francisco, CA 94103, USA
+              Address: 472 Amherst St. Unit 727173, Nashua, New Hampshire 03063, United States
             </p>
           </div>
         </div>

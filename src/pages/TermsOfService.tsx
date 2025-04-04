@@ -126,12 +126,12 @@ const TermsOfService = () => {
             
             <h2>12. Governing Law</h2>
             <p>
-              These Terms shall be governed and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions. Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights.
+              These Terms shall be governed and construed in accordance with the laws of the State of New Hampshire, United States, without regard to its conflict of law provisions. Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights.
             </p>
             
             <h2>13. Dispute Resolution</h2>
             <p>
-              Any dispute arising from or relating to the subject matter of these Terms shall be finally settled by arbitration in San Francisco County, California, using the English language in accordance with the Arbitration Rules and Procedures of the Judicial Arbitration and Mediation Services, Inc. ("JAMS") then in effect, by one commercial arbitrator with substantial experience in resolving intellectual property and commercial contract disputes.
+              Any dispute arising from or relating to the subject matter of these Terms shall be finally settled by arbitration in Nashua, New Hampshire, using the English language in accordance with the Arbitration Rules and Procedures of the Judicial Arbitration and Mediation Services, Inc. ("JAMS") then in effect, by one commercial arbitrator with substantial experience in resolving intellectual property and commercial contract disputes.
             </p>
             
             <h2>14. Severability</h2>
@@ -151,7 +151,7 @@ const TermsOfService = () => {
             <p>
               SignPov Inc.<br />
               Email: legal@signpov.com<br />
-              Address: 123 Signature Lane, Suite 456, San Francisco, CA 94103, USA
+              Address: 472 Amherst St. Unit 727173, Nashua, New Hampshire 03063, United States
             </p>
           </div>
         </div>
