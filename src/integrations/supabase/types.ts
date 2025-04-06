@@ -42,6 +42,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          is_premium: boolean | null
+          storage_limit: number
+          storage_used: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          is_premium?: boolean | null
+          storage_limit?: number
+          storage_used?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_premium?: boolean | null
+          storage_limit?: number
+          storage_used?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       signatures: {
         Row: {
           created_at: string

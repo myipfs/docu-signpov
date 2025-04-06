@@ -31,6 +31,7 @@ export const useStorageLimit = () => {
 
     try {
       setLoading(true);
+      // Explicitly cast the type to work with the profiles table
       const { data, error } = await supabase
         .from('profiles')
         .select('storage_used, storage_limit, is_premium')
