@@ -59,15 +59,15 @@ const ViewDocument = () => {
     const url = URL.createObjectURL(blob);
     
     // Create a download link and click it
-    const a = document.createElement('a');
+    const a = window.document.createElement('a');
     a.href = url;
     a.download = `${document.title}.txt`;
-    document.body.appendChild(a);
+    window.document.body.appendChild(a);
     a.click();
     
     // Clean up
     URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
     
     toast({
       title: "Document downloaded",

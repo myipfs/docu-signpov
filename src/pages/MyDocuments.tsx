@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -140,21 +141,21 @@ const MyDocuments = () => {
     }
   };
 
-  const handleDownload = (document: SavedDocument) => {
+  const handleDownload = (doc: SavedDocument) => {
     // Create a blob with the content
-    const blob = new Blob([document.content], { type: 'text/plain' });
+    const blob = new Blob([doc.content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     
     // Create a download link and click it
-    const a = document.createElement('a');
+    const a = window.document.createElement('a');
     a.href = url;
-    a.download = `${document.title}.txt`;
-    document.body.appendChild(a);
+    a.download = `${doc.title}.txt`;
+    window.document.body.appendChild(a);
     a.click();
     
     // Clean up
     URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
     
     toast({
       title: "Document downloaded",
