@@ -31,7 +31,7 @@ const ViewDocument = () => {
         }
 
         if (data) {
-          setDocument(data);
+          setDocument(data as { title: string, content: string });
         }
       } catch (error: any) {
         console.error('Error fetching document:', error);

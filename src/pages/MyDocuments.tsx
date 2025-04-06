@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -47,7 +46,7 @@ const MyDocuments = () => {
           throw error;
         }
 
-        setDocuments(data || []);
+        setDocuments(data as SavedDocument[] || []);
       } catch (error: any) {
         console.error('Error fetching documents:', error);
         toast({
