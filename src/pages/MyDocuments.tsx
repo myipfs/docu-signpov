@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/context/SessionContext';
 import { supabase } from '@/integrations/supabase/client';
-import { SavedDocument } from '@/hooks/useTemplateEditor';
+import { SavedDocument } from '@/types/document';
 import { 
   FileText, 
   Edit, 
