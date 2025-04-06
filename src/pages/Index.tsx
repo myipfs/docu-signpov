@@ -84,49 +84,103 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="glass-card p-8 rounded-xl max-w-lg mx-auto text-center border-2 border-primary/20">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-6">
-                Free Forever
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {/* Free Plan */}
+              <div className="glass-card p-8 rounded-xl border-2 border-primary/10">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-6">
+                  Free Forever
+                </div>
+                <h3 className="text-4xl font-bold mb-2">$0</h3>
+                <p className="text-foreground/70 mb-6">500MB storage</p>
+                
+                <ul className="space-y-4 mb-8 text-left">
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Upload any document format</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Electronic signatures</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>5 signature requests/month</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Basic templates</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Email support</span>
+                  </li>
+                </ul>
+                
+                <Link to="/auth" className="inline-flex justify-center items-center w-full py-3 px-6 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
+                  Get Started
+                </Link>
               </div>
-              <h3 className="text-4xl font-bold mb-2">$0</h3>
-              <p className="text-foreground/70 mb-6">No credit card required</p>
               
-              <ul className="space-y-4 mb-8 text-left">
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  <span>Upload any document format</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  <span>Electronic signatures</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  <span>Invite others to sign</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  <span>Document tracking</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  <span>Secure document handling</span>
-                </li>
-              </ul>
-              
-              <Link to="/dashboard" className="inline-flex justify-center items-center w-full py-3 px-6 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors">
-                Get Started
-              </Link>
+              {/* Premium Plan */}
+              <div className="glass-card p-8 rounded-xl border-2 border-primary relative">
+                <div className="absolute -top-4 inset-x-0 flex justify-center">
+                  <div className="px-4 py-1 bg-primary text-white text-sm font-medium rounded-full">
+                    Recommended
+                  </div>
+                </div>
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-6">
+                  Premium
+                </div>
+                <h3 className="text-4xl font-bold mb-2">$4.99<span className="text-lg font-normal text-foreground/70">/mo</span></h3>
+                <p className="text-foreground/70 mb-6">1GB storage</p>
+                
+                <ul className="space-y-4 mb-8 text-left">
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>All features in Free</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Unlimited signature requests</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>All premium templates</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Custom branding</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+                
+                <Link to="/plans" className="inline-flex justify-center items-center w-full py-3 px-6 rounded-lg border-2 border-primary bg-transparent hover:bg-primary/10 text-primary font-medium transition-colors">
+                  View Plans
+                </Link>
+              </div>
             </div>
           </div>
         </section>

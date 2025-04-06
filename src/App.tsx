@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import MyDocuments from '@/pages/MyDocuments';
 import ViewDocument from './pages/ViewDocument';
+import Auth from './pages/Auth';
+import Plans from './pages/Plans';
 
 const queryClient = new QueryClient();
 
@@ -36,6 +39,8 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/plans" element={<Plans />} />
               <Route path="/sign/:id" element={<SignDocument />} />
               <Route path="/quick-sign" element={<QuickSign />} />
               <Route path="/editor" element={<DocumentEditor />} />
