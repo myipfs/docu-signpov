@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,7 +22,12 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { session } = useSession();
+  
+  // Get tab from URL parameter or default to signin
+  const defaultTab = searchParams.get('tab') === 'signup' ? 'signup' : 'signin';
+  const [activeTab, setActiveTab] = useState(defaultTab);
   
   const state = location.state as LocationState;
   const returnTo = state?.returnTo || '/dashboard';
@@ -96,7 +101,7 @@ const Auth = () => {
       <Header />
       <main className="flex-grow py-16 px-4 flex items-center justify-center">
         <Card className="w-full max-w-md">
-          <Tabs defaultValue="signin">
+          <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab}>
             <CardHeader>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>

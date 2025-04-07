@@ -40,6 +40,8 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/register" element={<Navigate to="/auth?tab=signup" />} />
+              <Route path="/login" element={<Navigate to="/auth" />} />
               <Route path="/plans" element={<Plans />} />
               <Route path="/sign/:id" element={<SignDocument />} />
               <Route path="/quick-sign" element={<QuickSign />} />
