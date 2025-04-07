@@ -39,10 +39,12 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Using the correct method for typing RPC calls
+      // Fix: Use the generic parameter directly on the rpc method
       const { data, error } = await supabase
-        .rpc('get_user_storage_data')
-        .returns<UserStorageData>();
+        .rpc('get_user_storage_data') as { 
+          data: UserStorageData | null; 
+          error: any;
+        };
 
       if (error) throw error;
 
