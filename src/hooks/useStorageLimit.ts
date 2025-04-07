@@ -31,12 +31,10 @@ export const useStorageLimit = () => {
 
     try {
       setLoading(true);
-      // Explicitly cast the type to work with the profiles table
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('storage_used, storage_limit, is_premium')
-        .eq('id', session.user.id)
-        .single();
+      
+      // Use raw SQL query with RPC to avoid TypeScript errors
+      // This is a workaround until the types are properly updated
+      const { data, error } = await supabase.rpc('get_user_storage_data');
 
       if (error) throw error;
 
