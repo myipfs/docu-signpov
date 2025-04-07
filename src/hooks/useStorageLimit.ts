@@ -39,13 +39,17 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Fix TypeScript errors by explicitly specifying the return type
-      const { data, error } = await supabase
-        .rpc('get_user_storage_data')
-        .returns<UserStorageData>();
+      // Use a different approach to type the RPC response
+      const { data: rpcData, error } = await supabase
+        .rpc('get_user_storage_data', {}, {
+          count: 'exact'
+        });
 
       if (error) throw error;
 
+      // Explicitly cast the response to our expected type
+      const data = rpcData as unknown as UserStorageData;
+      
       if (data) {
         const used = data.storage_used || 0;
         const limit = data.storage_limit || 0;
