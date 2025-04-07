@@ -39,7 +39,7 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Update the RPC call with correct typing
+      // Fix typing of the RPC call
       const { data, error } = await supabase
         .rpc('get_user_storage_data')
         .returns<UserStorageData>();
