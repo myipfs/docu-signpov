@@ -41,7 +41,7 @@ export const useStorageLimit = () => {
       
       // Use raw SQL query with RPC to avoid TypeScript errors
       // This is a workaround until the types are properly updated
-      const { data, error } = await supabase.rpc<UserStorageData>('get_user_storage_data');
+      const { data, error } = await supabase.rpc<UserStorageData, Record<string, unknown>>('get_user_storage_data');
 
       if (error) throw error;
 
