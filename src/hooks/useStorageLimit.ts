@@ -11,6 +11,13 @@ interface StorageData {
   isLimitReached: boolean;
 }
 
+// Define the type for the RPC function response
+interface UserStorageData {
+  storage_used: number;
+  storage_limit: number;
+  is_premium: boolean;
+}
+
 export const useStorageLimit = () => {
   const { session } = useSession();
   const [storageData, setStorageData] = useState<StorageData>({
@@ -34,7 +41,7 @@ export const useStorageLimit = () => {
       
       // Use raw SQL query with RPC to avoid TypeScript errors
       // This is a workaround until the types are properly updated
-      const { data, error } = await supabase.rpc('get_user_storage_data');
+      const { data, error } = await supabase.rpc<UserStorageData>('get_user_storage_data');
 
       if (error) throw error;
 
