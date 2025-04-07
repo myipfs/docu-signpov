@@ -39,6 +39,7 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
+      // Fix TypeScript errors by explicitly specifying the return type
       const { data, error } = await supabase
         .rpc('get_user_storage_data')
         .returns<UserStorageData>();
