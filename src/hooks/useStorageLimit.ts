@@ -40,7 +40,8 @@ export const useStorageLimit = () => {
       setLoading(true);
       
       const { data, error } = await supabase
-        .rpc<UserStorageData>('get_user_storage_data');
+        .rpc('get_user_storage_data')
+        .returns<UserStorageData>();
 
       if (error) throw error;
 

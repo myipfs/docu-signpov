@@ -36,7 +36,7 @@ const PricingPage = () => {
               <ul className="space-y-3 mb-8 flex-grow">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Unlimited document uploads</span>
+                  <span>500MB storage</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -63,7 +63,7 @@ const PricingPage = () => {
               </Button>
             </div>
             
-            {/* Pro Plan */}
+            {/* Premium Plan */}
             <div className="glass-card p-8 rounded-xl border-2 border-primary relative flex flex-col h-full">
               <div className="absolute -top-4 inset-x-0 flex justify-center">
                 <div className="px-4 py-1 bg-primary text-white text-sm font-medium rounded-full">
@@ -73,13 +73,13 @@ const PricingPage = () => {
               
               <div className="mb-6 mt-2">
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-                  Pro
+                  Premium
                 </div>
-                <h2 className="text-3xl font-bold mb-2">Professional</h2>
+                <h2 className="text-3xl font-bold mb-2">Premium</h2>
                 <p className="text-foreground/70">Advanced features for professionals</p>
               </div>
               
-              <div className="text-3xl font-bold mb-6">Coming Soon</div>
+              <div className="text-3xl font-bold mb-6">$4.99<span className="text-lg font-normal text-foreground/70">/mo</span></div>
               
               <ul className="space-y-3 mb-8 flex-grow">
                 <li className="flex items-start">
@@ -88,7 +88,15 @@ const PricingPage = () => {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span><strong>1GB</strong> storage (2x more)</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
                   <span>Unlimited signature requests</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Temporary email forwarding</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -100,31 +108,13 @@ const PricingPage = () => {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <div className="flex items-center">
-                    <span>API access</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-foreground/40 ml-1.5 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="w-[200px] text-xs">
-                            Integrate SignPov with your existing systems through our REST API
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
                   <span>Priority support</span>
                 </li>
               </ul>
               
               <Button asChild className="w-full">
-                <Link to="/dashboard">
-                  Join Waitlist
+                <Link to="/plans">
+                  Upgrade Now
                 </Link>
               </Button>
             </div>
@@ -144,7 +134,7 @@ const PricingPage = () => {
               <ul className="space-y-3 mb-8 flex-grow">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Everything in Professional</span>
+                  <span>Everything in Premium</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -184,7 +174,7 @@ const PricingPage = () => {
               <div className="glass-card p-6 rounded-xl">
                 <h3 className="text-lg font-medium mb-3">Is there really a free plan?</h3>
                 <p className="text-foreground/70">
-                  Yes! Our free plan offers unlimited document uploads and 5 signature requests per month forever.
+                  Yes! Our free plan offers 500MB of storage and 5 signature requests per month forever.
                   It's perfect for individuals and small businesses with occasional signing needs.
                 </p>
               </div>
@@ -199,11 +189,10 @@ const PricingPage = () => {
               </div>
               
               <div className="glass-card p-6 rounded-xl">
-                <h3 className="text-lg font-medium mb-3">Can I cancel or change my plan anytime?</h3>
+                <h3 className="text-lg font-medium mb-3">Is the temporary email feature available on free plans?</h3>
                 <p className="text-foreground/70">
-                  Absolutely. You can upgrade, downgrade, or cancel your plan at any time. 
-                  If you cancel, you'll continue to have access to your plan's features until the end
-                  of your billing period.
+                  The temporary email forwarding feature is only available on our Premium plan. This
+                  feature helps protect your privacy when sending and receiving signed documents.
                 </p>
               </div>
               

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ const Header = () => {
     <header className="bg-background border-b">
       <div className="container flex h-16 items-center justify-between py-4">
         <Link to="/" className="font-bold text-lg">
-          Document Maker
+          SignPov
         </Link>
         <nav className="flex items-center space-x-4">
           <Button variant="ghost" asChild>
@@ -23,10 +24,10 @@ const Header = () => {
             </Button>
           )}
           <Button variant="ghost" asChild>
-            <Link to="/signature">Sign Documents</Link>
+            <Link to="/sign-documents">Sign Documents</Link>
           </Button>
           <Button variant="ghost" asChild>
-            <Link to="/about">About</Link>
+            <Link to="/pricing">Pricing</Link>
           </Button>
           <Button variant="ghost" asChild>
             <Link to="/contact">Contact</Link>

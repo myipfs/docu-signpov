@@ -25,6 +25,7 @@ import MyDocuments from '@/pages/MyDocuments';
 import ViewDocument from './pages/ViewDocument';
 import Auth from './pages/Auth';
 import Plans from './pages/Plans';
+import SignDocuments from './pages/SignDocuments';
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => {
               <Route path="/login" element={<Navigate to="/auth" />} />
               <Route path="/plans" element={<Plans />} />
               <Route path="/sign/:id" element={<SignDocument />} />
+              <Route path="/sign-documents" element={<SignDocuments />} />
               <Route path="/quick-sign" element={<QuickSign />} />
               <Route path="/editor" element={<DocumentEditor />} />
               <Route path="/templates" element={<TemplatesPage />} />

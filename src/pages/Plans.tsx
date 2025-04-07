@@ -129,6 +129,10 @@ const Plans = () => {
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Temporary email feature</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
                     <span>Custom branding options</span>
                   </li>
                 </ul>
