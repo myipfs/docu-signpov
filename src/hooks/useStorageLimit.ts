@@ -39,12 +39,16 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Fix: Call RPC function without type parameters and cast the result afterwards
-      const { data, error } = await supabase.rpc('get_user_storage_data');
+      // Use a more generic approach without explicit typing at the call site
+      const response = await supabase.rpc('get_user_storage_data', {}, {
+        count: 'none'
+      });
+      
+      const { data, error } = response;
 
       if (error) throw error;
       
-      // Safely cast the data after receiving it
+      // Cast data after retrieval
       const userData = data as UserStorageData;
       
       if (userData) {
