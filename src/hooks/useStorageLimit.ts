@@ -39,24 +39,24 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Call RPC without additional options and fix type issues
-      const { data, error } = await supabase.rpc('get_user_storage_data');
+      // Call RPC with explicit typing for the response
+      const { data, error } = await supabase.rpc('get_user_storage_data') as { 
+        data: UserStorageData | null;
+        error: Error | null;
+      };
 
       if (error) throw error;
-
-      // Type assertion after getting the response
-      const userData = data as UserStorageData;
       
-      if (userData) {
-        const used = userData.storage_used || 0;
-        const limit = userData.storage_limit || 0;
+      if (data) {
+        const used = data.storage_used || 0;
+        const limit = data.storage_limit || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
         
         setStorageData({
           used,
           limit,
           percentUsed,
-          isPremium: userData.is_premium || false,
+          isPremium: data.is_premium || false,
           isLimitReached: used >= limit,
         });
       }
