@@ -39,28 +39,21 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Use a more generic approach without explicit typing at the call site
-      const response = await supabase.rpc('get_user_storage_data', {}, {
-        count: 'none'
-      });
+      // Fix: Use the any type to avoid TypeScript errors with the function name
+      const { data, error } = await supabase.rpc<UserStorageData>('get_user_storage_data' as any);
       
-      const { data, error } = response;
-
       if (error) throw error;
       
-      // Cast data after retrieval
-      const userData = data as UserStorageData;
-      
-      if (userData) {
-        const used = userData.storage_used || 0;
-        const limit = userData.storage_limit || 0;
+      if (data) {
+        const used = data.storage_used || 0;
+        const limit = data.storage_limit || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
         
         setStorageData({
           used,
           limit,
           percentUsed,
-          isPremium: userData.is_premium || false,
+          isPremium: data.is_premium || false,
           isLimitReached: used >= limit,
         });
       }
