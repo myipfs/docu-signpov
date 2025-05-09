@@ -39,23 +39,23 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Fix: Use proper type parameters for rpc method - params type and return type
-      const { data, error } = await supabase.rpc<Record<string, never>, UserStorageData>(
-        'get_user_storage_data'
-      );
+      // Use the generic call without specific type parameters
+      const { data, error } = await supabase.rpc('get_user_storage_data');
       
       if (error) throw error;
       
       if (data) {
-        const used = data.storage_used || 0;
-        const limit = data.storage_limit || 0;
+        // Cast the data to our expected type
+        const userData = data as UserStorageData;
+        const used = userData.storage_used || 0;
+        const limit = userData.storage_limit || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
         
         setStorageData({
           used,
           limit,
           percentUsed,
-          isPremium: data.is_premium || false,
+          isPremium: userData.is_premium || false,
           isLimitReached: used >= limit,
         });
       }
