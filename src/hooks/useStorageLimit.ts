@@ -39,8 +39,10 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Fix: Use the any type to avoid TypeScript errors with the function name
-      const { data, error } = await supabase.rpc<UserStorageData>('get_user_storage_data' as any);
+      // Fix: Use proper type parameters for rpc method - params type and return type
+      const { data, error } = await supabase.rpc<Record<string, never>, UserStorageData>(
+        'get_user_storage_data'
+      );
       
       if (error) throw error;
       
