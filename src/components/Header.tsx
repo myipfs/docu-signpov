@@ -11,8 +11,12 @@ const Header = () => {
   return (
     <header className="bg-background border-b">
       <div className="container flex h-16 items-center justify-between py-4">
-        <Link to="/" className="font-bold text-lg">
-          SignPov
+        <Link to="/" className="font-bold text-lg flex items-center">
+          <img 
+            src="/lovable-uploads/edcfe325-57db-4751-994f-524a88e0def9.png" 
+            alt="SignPov" 
+            className="h-8 mr-2" 
+          />
         </Link>
         <nav className="flex items-center space-x-4">
           <Button variant="ghost" asChild>

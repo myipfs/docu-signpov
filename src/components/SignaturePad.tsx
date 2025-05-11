@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from '@/utils/toast';
+import { toast } from '@/hooks/use-toast';
 import { SignatureCanvas } from './signature/SignatureCanvas';
 import { TypedSignature } from './signature/TypedSignature';
 import { UploadedSignature } from './signature/UploadedSignature';
@@ -46,15 +46,18 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
   }, [open]);
   
   const checkAuth = async () => {
+    console.log("Checking auth status");
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session && activeTab === 'saved') {
+      console.log("User authenticated, loading saved signatures");
       loadSavedSignatures();
     }
   };
   
   useEffect(() => {
     if (open && activeTab === 'saved' && isAuthenticated) {
+      console.log("Tab changed to saved signatures, loading them");
       loadSavedSignatures();
     }
   }, [open, activeTab, isAuthenticated]);
@@ -76,13 +79,22 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
     }
     
     if (!finalSignatureDataUrl) {
-      toast.error('Please create a signature first');
+      toast({
+        title: "Error",
+        description: "Please create a signature first",
+        variant: "destructive"
+      });
       return;
     }
     
     try {
       if (isAuthenticated && saveToAccount && activeTab !== 'saved') {
         setIsLoading(true);
+        console.log("Saving signature to database", { 
+          signatureName: signatureName || typedName || '', 
+          isDefault 
+        });
+        
         await saveSignatureToDatabase(
           finalSignatureDataUrl, 
           signatureName || typedName || '', 
@@ -94,6 +106,11 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
       onClose();
     } catch (error) {
       console.error('Error handling signature:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save signature. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }

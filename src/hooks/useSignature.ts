@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { toast } from '@/utils/toast';
+import { toast } from '@/hooks/use-toast';
 import { signatureEncryption } from '@/utils/encryption';
 import { supabase } from '@/integrations/supabase/client';
 import { useEncryption } from '@/hooks/useEncryption';
@@ -21,9 +21,11 @@ export function useSignature() {
   const loadSavedSignatures = async () => {
     try {
       setIsLoading(true);
+      console.log("Loading saved signatures");
       
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user?.id) {
+        console.error("No authenticated user found");
         throw new Error('User not authenticated');
       }
       
@@ -33,12 +35,16 @@ export function useSignature() {
         .order('created_at', { ascending: false });
       
       if (error) {
+        console.error("Error fetching signatures:", error);
         throw error;
       }
+      
+      console.log("Signatures fetched:", data?.length || 0);
       
       const decryptedSignatures = await Promise.all(
         (data || []).map(async (signature) => {
           try {
+            console.log("Decrypting signature:", signature.id);
             const decryptedData = await decryptData(signature.signature_data);
             return {
               ...signature,
@@ -55,6 +61,7 @@ export function useSignature() {
       );
       
       setSavedSignatures(decryptedSignatures || []);
+      console.log("Signatures processed:", decryptedSignatures?.length || 0);
       
       const defaultSignature = decryptedSignatures?.find(sig => sig.is_default);
       if (defaultSignature) {
@@ -62,7 +69,11 @@ export function useSignature() {
       }
     } catch (error) {
       console.error('Error loading signatures:', error);
-      toast.error('Failed to load saved signatures');
+      toast({
+        title: "Error",
+        description: "Failed to load saved signatures",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -71,21 +82,26 @@ export function useSignature() {
   const saveSignatureToDatabase = async (signatureDataUrl: string, signatureName: string, isDefault: boolean) => {
     try {
       setIsLoading(true);
+      console.log("Saving signature to database");
       
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user?.id) {
+        console.error("No authenticated user found");
         throw new Error('User not authenticated');
       }
       
+      console.log("Encrypting signature data");
       const encryptedSignature = await encryptData(signatureDataUrl);
       
       if (isDefault) {
+        console.log("Setting as default signature, resetting other defaults");
         await supabase
           .from('signatures')
           .update({ is_default: false })
           .not('id', 'is', null);
       }
       
+      console.log("Inserting signature into database");
       const { data, error } = await supabase
         .from('signatures')
         .insert({
@@ -97,15 +113,25 @@ export function useSignature() {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error inserting signature:", error);
+        throw error;
+      }
       
-      toast.success('Signature saved securely to your account');
+      toast({
+        title: "Success",
+        description: "Signature saved securely to your account"
+      });
       
       await loadSavedSignatures();
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving signature:', error);
-      toast.error('Failed to save signature to your account');
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save signature to your account",
+        variant: "destructive"
+      });
       throw error;
     } finally {
       setIsLoading(false);
@@ -115,6 +141,7 @@ export function useSignature() {
   const setSignatureAsDefault = async (signatureId: string) => {
     try {
       setIsLoading(true);
+      console.log("Setting signature as default:", signatureId);
       
       await supabase
         .from('signatures')
@@ -126,14 +153,24 @@ export function useSignature() {
         .update({ is_default: true })
         .eq('id', signatureId);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating default signature:", error);
+        throw error;
+      }
       
-      toast.success('Default signature updated');
+      toast({
+        title: "Success",
+        description: "Default signature updated"
+      });
       await loadSavedSignatures();
       
     } catch (error) {
       console.error('Error updating default signature:', error);
-      toast.error('Failed to update default signature');
+      toast({
+        title: "Error",
+        description: "Failed to update default signature",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -142,15 +179,22 @@ export function useSignature() {
   const deleteSignature = async (signatureId: string) => {
     try {
       setIsLoading(true);
+      console.log("Deleting signature:", signatureId);
       
       const { error } = await supabase
         .from('signatures')
         .delete()
         .eq('id', signatureId);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error deleting signature:", error);
+        throw error;
+      }
       
-      toast.success('Signature deleted');
+      toast({
+        title: "Success",
+        description: "Signature deleted"
+      });
       
       if (selectedSignatureId === signatureId) {
         setSelectedSignatureId(null);
@@ -160,7 +204,11 @@ export function useSignature() {
       
     } catch (error) {
       console.error('Error deleting signature:', error);
-      toast.error('Failed to delete signature');
+      toast({
+        title: "Error",
+        description: "Failed to delete signature",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }

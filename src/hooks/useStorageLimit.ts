@@ -39,24 +39,21 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Using type assertion to bypass type checking for the RPC function name
-      // @ts-ignore - Ignore the type error for this line
-      const { data, error } = await supabase.rpc('get_user_storage_data');
+      // Use a proper type annotation for the function call
+      const { data, error } = await supabase.rpc<UserStorageData>('get_user_storage_data');
       
       if (error) throw error;
       
       if (data) {
-        // Cast the data to our expected type
-        const userData = data as UserStorageData;
-        const used = userData.storage_used || 0;
-        const limit = userData.storage_limit || 0;
+        const used = data.storage_used || 0;
+        const limit = data.storage_limit || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
         
         setStorageData({
           used,
           limit,
           percentUsed,
-          isPremium: userData.is_premium || false,
+          isPremium: data.is_premium || false,
           isLimitReached: used >= limit,
         });
       }
