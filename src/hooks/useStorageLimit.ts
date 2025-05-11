@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/context/SessionContext';
+import { z } from 'zod';
 
 interface StorageData {
   used: number;
@@ -11,13 +12,27 @@ interface StorageData {
   isLimitReached: boolean;
 }
 
-// Define a type that matches what the get_user_storage_data_v2 RPC function returns
-interface UserStorageDataV2 {
-  total_storage: number;
-  used_storage: number;
-  document_count: number;
-  signatures_count: number;
-  storage_buckets?: string[];
+// Define a Zod schema for the response data
+const StorageDataResponseSchema = z.object({
+  total_storage: z.number(),
+  used_storage: z.number(),
+  document_count: z.number(),
+  signatures_count: z.number(),
+  storage_buckets: z.array(z.string()).optional()
+});
+
+// Type based on the schema
+type UserStorageDataV2 = z.infer<typeof StorageDataResponseSchema>;
+
+// Type guard for runtime checking
+function isValidStorageData(data: unknown): data is UserStorageDataV2 {
+  try {
+    StorageDataResponseSchema.parse(data);
+    return true;
+  } catch (error) {
+    console.error("Invalid storage data:", error);
+    return false;
+  }
 }
 
 export const useStorageLimit = () => {
@@ -48,9 +63,12 @@ export const useStorageLimit = () => {
       
       if (rpcError) throw rpcError;
       
-      if (data) {
-        const used = data.used_storage || 0;
-        const limit = data.total_storage || 0;
+      if (data && isValidStorageData(data)) {
+        // Validate data with Zod
+        const validatedData = StorageDataResponseSchema.parse(data);
+        
+        const used = validatedData.used_storage || 0;
+        const limit = validatedData.total_storage || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
         
         // Check if user is premium by querying the profiles table

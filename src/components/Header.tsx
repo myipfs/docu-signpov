@@ -13,13 +13,12 @@ const Header = () => {
   return (
     <header className="bg-background border-b">
       <div className="container flex h-16 items-center justify-between py-4">
-        <Link to="/" className="font-bold text-lg flex items-center">
+        <Link to="/" className="flex items-center">
           <img 
             src="/lovable-uploads/edcfe325-57db-4751-994f-524a88e0def9.png" 
             alt="SignPov" 
-            className="h-8 mr-2" 
+            className="h-10" 
           />
-          <span>SignPov</span>
           {isPremium && (
             <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
               Premium
