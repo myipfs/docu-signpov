@@ -20,6 +20,7 @@ export const useDocumentList = (userId?: string) => {
         const { data, error } = await supabase
           .from('documents')
           .select('*')
+          .eq('user_id', userId) // Make sure we're explicitly filtering by the current user
           .order('updated_at', { ascending: false });
 
         if (error) {
@@ -31,7 +32,7 @@ export const useDocumentList = (userId?: string) => {
         console.error('Error fetching documents:', error);
         toast({
           title: "Error",
-          description: "Could not load your documents.",
+          description: "Could not load your documents. Please try again.",
           variant: "destructive"
         });
       } finally {
@@ -49,6 +50,19 @@ export const useDocumentList = (userId?: string) => {
   const handleDelete = async (id: string) => {
     try {
       setDeleting(id);
+      
+      // First check if the document exists and belongs to the current user
+      const { data: existingDoc, error: fetchError } = await supabase
+        .from('documents')
+        .select('id')
+        .eq('id', id)
+        .eq('user_id', userId)
+        .single();
+
+      if (fetchError || !existingDoc) {
+        throw new Error('Document not found or you do not have permission to delete it');
+      }
+
       const { error } = await supabase
         .from('documents')
         .delete()
@@ -69,7 +83,7 @@ export const useDocumentList = (userId?: string) => {
       console.error('Error deleting document:', error);
       toast({
         title: "Delete failed",
-        description: "Could not delete document.",
+        description: error.message || "Could not delete document. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -84,7 +98,8 @@ export const useDocumentList = (userId?: string) => {
         const { error } = await supabase
           .from('documents')
           .update({ is_public: true })
-          .eq('id', document.id);
+          .eq('id', document.id)
+          .eq('user_id', userId); // Make sure we're only updating documents owned by this user
           
         if (error) throw error;
       }
@@ -112,7 +127,7 @@ export const useDocumentList = (userId?: string) => {
       console.error('Error sharing document:', error);
       toast({
         title: "Share failed",
-        description: "Could not share document.",
+        description: "Could not share document. Please try again.",
         variant: "destructive"
       });
     }
