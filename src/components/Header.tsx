@@ -3,10 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/context/SessionContext';
+import { useStorageLimit } from '@/hooks/useStorageLimit';
 
 const Header = () => {
   const { session } = useSession();
   const isAuthenticated = !!session?.user;
+  const { isPremium } = useStorageLimit();
 
   return (
     <header className="bg-background border-b">
@@ -18,6 +20,11 @@ const Header = () => {
             className="h-8 mr-2" 
           />
           <span>SignPov</span>
+          {isPremium && (
+            <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+              Premium
+            </span>
+          )}
         </Link>
         <nav className="flex items-center space-x-4">
           <Button variant="ghost" asChild>
