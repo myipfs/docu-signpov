@@ -42,7 +42,7 @@ export const useStorageLimit = () => {
       
       // Call the RPC function without parameters since it uses auth.uid() internally
       // Use the exact function name from the migration file
-      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data')
+      const { data, error: rpcError } = await supabase.rpc<UserStorageData>('get_user_storage_data')
         .single();
       
       if (rpcError) throw rpcError;
