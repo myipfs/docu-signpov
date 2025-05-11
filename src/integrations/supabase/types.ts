@@ -96,6 +96,36 @@ export type Database = {
         }
         Relationships: []
       }
+      storage_history: {
+        Row: {
+          document_count: number | null
+          id: number
+          recorded_at: string | null
+          signatures_count: number | null
+          total_storage: number | null
+          used_storage: number | null
+          user_id: string | null
+        }
+        Insert: {
+          document_count?: number | null
+          id?: number
+          recorded_at?: string | null
+          signatures_count?: number | null
+          total_storage?: number | null
+          used_storage?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          document_count?: number | null
+          id?: number
+          recorded_at?: string | null
+          signatures_count?: number | null
+          total_storage?: number | null
+          used_storage?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       temporary_emails: {
         Row: {
           active: boolean | null
@@ -131,7 +161,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_and_track_storage: {
+        Args: { user_id: string }
+        Returns: {
+          total_storage: number
+          used_storage: number
+          document_count: number
+          signatures_count: number
+        }[]
+      }
+      get_user_storage_data_v2: {
+        Args: { user_id: string }
+        Returns: {
+          total_storage: number
+          used_storage: number
+          document_count: number
+          signatures_count: number
+          storage_buckets: string[]
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

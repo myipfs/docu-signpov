@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/context/SessionContext';
@@ -39,11 +38,9 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Use a type assertion to properly handle the RPC call
-      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data') as unknown as {
-        data: UserStorageData | null;
-        error: any;
-      };
+      // Call the RPC function without parameters since it uses auth.uid() internally
+      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data', {})
+        .single();
       
       if (rpcError) throw rpcError;
       
