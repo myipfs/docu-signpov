@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSession } from '@/context/SessionContext';
@@ -10,7 +11,8 @@ interface StorageData {
   isLimitReached: boolean;
 }
 
-// Define the type for the RPC function response
+// Define a type that matches what the get_user_storage_data RPC function returns
+// Based on the migration file: storage_functions.sql
 interface UserStorageData {
   storage_used: number;
   storage_limit: number;
@@ -39,7 +41,8 @@ export const useStorageLimit = () => {
       setLoading(true);
       
       // Call the RPC function without parameters since it uses auth.uid() internally
-      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data', {})
+      // Use the exact function name from the migration file
+      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data')
         .single();
       
       if (rpcError) throw rpcError;
