@@ -17,6 +17,7 @@ const Header = () => {
             alt="SignPov" 
             className="h-8 mr-2" 
           />
+          <span>SignPov</span>
         </Link>
         <nav className="flex items-center space-x-4">
           <Button variant="ghost" asChild>

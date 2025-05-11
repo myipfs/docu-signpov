@@ -39,8 +39,9 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Use any type for now to bypass TypeScript's strict checking for RPC functions
-      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data') as { 
+      // Fix: Using a typecasting approach to handle the RPC function call
+      const response = await supabase.rpc('get_user_storage_data');
+      const { data, error: rpcError } = response as unknown as { 
         data: UserStorageData | null; 
         error: any;
       };
@@ -48,17 +49,15 @@ export const useStorageLimit = () => {
       if (rpcError) throw rpcError;
       
       if (data) {
-        // Type assertion to match the UserStorageData interface
-        const userData = data as UserStorageData;
-        const used = userData.storage_used || 0;
-        const limit = userData.storage_limit || 0;
+        const used = data.storage_used || 0;
+        const limit = data.storage_limit || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
         
         setStorageData({
           used,
           limit,
           percentUsed,
-          isPremium: userData.is_premium || false,
+          isPremium: data.is_premium || false,
           isLimitReached: used >= limit,
         });
       }
