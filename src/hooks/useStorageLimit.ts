@@ -39,10 +39,9 @@ export const useStorageLimit = () => {
     try {
       setLoading(true);
       
-      // Force the correct type for the RPC response
-      const response = await supabase.rpc('get_user_storage_data');
-      const { data, error: rpcError } = response as unknown as { 
-        data: UserStorageData | null; 
+      // Use a type assertion to properly handle the RPC call
+      const { data, error: rpcError } = await supabase.rpc('get_user_storage_data') as unknown as {
+        data: UserStorageData | null;
         error: any;
       };
       
