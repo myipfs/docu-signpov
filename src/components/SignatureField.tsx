@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from '@/utils/toast';
 import { SignaturePad } from './SignaturePad';
 import { supabase } from '@/integrations/supabase/client';
@@ -45,6 +45,18 @@ export function SignatureField({
     elementId: `signature-field-${id}`,
     disabled: readOnly || !onMove
   });
+  
+  useEffect(() => {
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.log("User is not authenticated");
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const handleSign = () => {
     if (readOnly) return;
@@ -53,14 +65,25 @@ export function SignatureField({
 
   const handleSaveSignature = async (signatureDataUrl: string) => {
     try {
+      setIsSignaturePadOpen(false);
+      
       if (isAuthenticated) {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user?.id) {
-          const encryptedSignature = await encryptData(signatureDataUrl);
-          setSignature(signatureDataUrl);
-          if (onSign) {
-            onSign();
+          try {
+            const encryptedSignature = await encryptData(signatureDataUrl);
+            setSignature(signatureDataUrl);
+            if (onSign) {
+              onSign();
+            }
+          } catch (encryptError) {
+            console.error('Encryption error:', encryptError);
+            toast.error('Failed to process signature');
+            return;
           }
+        } else {
+          toast.error('You must be logged in to sign documents');
+          return;
         }
       } else {
         setSignature(signatureDataUrl);

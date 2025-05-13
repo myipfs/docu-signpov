@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/utils/toast';
 import { Upload } from 'lucide-react';
@@ -10,6 +10,7 @@ interface UploadedSignatureProps {
 
 export function UploadedSignature({ onDataUrlChange }: UploadedSignatureProps) {
   const [uploadedSignature, setUploadedSignature] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,9 +31,18 @@ export function UploadedSignature({ onDataUrlChange }: UploadedSignatureProps) {
     reader.readAsDataURL(file);
   };
   
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+  
   const handleRemove = () => {
     setUploadedSignature(null);
     onDataUrlChange(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -57,17 +67,20 @@ export function UploadedSignature({ onDataUrlChange }: UploadedSignatureProps) {
           <p className="text-sm text-muted-foreground mb-4">
             Upload an image of your signature
           </p>
-          <label className="cursor-pointer">
-            <Button variant="outline" type="button">
-              Choose File
-            </Button>
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileUpload}
-            />
-          </label>
+          <Button variant="outline" type="button" onClick={handleButtonClick}>
+            Choose File
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileUpload}
+            onClick={(e) => {
+              // Reset the value to allow reselecting the same file
+              (e.target as HTMLInputElement).value = '';
+            }}
+          />
         </div>
       )}
     </div>

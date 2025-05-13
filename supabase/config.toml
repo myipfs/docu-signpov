@@ -1,1 +1,19 @@
+
 project_id = "uxnigenudzuigoygbipe"
+
+[auth]
+site_url = "https://app.signpov.com"
+additional_redirect_urls = ["https://app.signpov.com/auth/callback"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
+template_subject_recover_password = "Reset your SignPov password"
+template_subject_confirm_email = "Confirm your SignPov email"
+template_subject_change_email = "Confirm your SignPov email change"
+template_subject_invite = "You've been invited to SignPov"
+sender_name = "SignPov Support"
+sender_address = "support@signpov.com"

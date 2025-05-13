@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/utils/toast";
 
 export const generateTempEmail = () => {
   const random = Math.random().toString(36).substring(2, 10);
@@ -13,6 +14,11 @@ export const createTemporaryEmail = async (forwardingTo: string) => {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 30); // Expires in 30 days
 
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      throw new Error("You must be signed in to create temporary emails");
+    }
+
     // Make sure to include all required fields and set active to true explicitly
     const { data, error } = await supabase
       .from('temporary_emails')
@@ -20,7 +26,8 @@ export const createTemporaryEmail = async (forwardingTo: string) => {
         temp_email: tempEmail,
         forwarding_to: forwardingTo,
         expires_at: expiryDate.toISOString(),
-        active: true
+        active: true,
+        user_id: session.user.id
       })
       .select()
       .single();
@@ -41,7 +48,7 @@ export const createTemporaryEmail = async (forwardingTo: string) => {
     }
     
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Temp email creation failed:", error);
     throw error;
   }
@@ -50,10 +57,17 @@ export const createTemporaryEmail = async (forwardingTo: string) => {
 export const getUserTemporaryEmails = async () => {
   try {
     console.log("Fetching temporary emails...");
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      throw new Error("You must be signed in to view temporary emails");
+    }
+    
     const { data, error } = await supabase
       .from('temporary_emails')
       .select('*')
       .eq('active', true)
+      .eq('user_id', session.user.id)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -72,10 +86,17 @@ export const getUserTemporaryEmails = async () => {
 export const deleteTemporaryEmail = async (id: string) => {
   try {
     console.log("Deleting temporary email with ID:", id);
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      throw new Error("You must be signed in to delete temporary emails");
+    }
+    
     const { error } = await supabase
       .from('temporary_emails')
       .update({ active: false })
-      .eq('id', id);
+      .eq('id', id)
+      .eq('user_id', session.user.id);
 
     if (error) {
       console.error("Error deleting temp email:", error);

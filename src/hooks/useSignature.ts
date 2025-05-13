@@ -1,7 +1,6 @@
 
-import { useState } from 'react';
-import { toast } from '@/hooks/use-toast';
-import { signatureEncryption } from '@/utils/encryption';
+import { useState, useEffect } from 'react';
+import { toast } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useEncryption } from '@/hooks/useEncryption';
 
@@ -25,13 +24,19 @@ export function useSignature() {
       
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user?.id) {
-        console.error("No authenticated user found");
-        throw new Error('User not authenticated');
+        console.log("No authenticated user found");
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to access your saved signatures",
+          variant: "destructive"
+        });
+        return;
       }
       
       const { data, error } = await supabase
         .from('signatures')
         .select('*')
+        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
       
       if (error) {
@@ -87,6 +92,11 @@ export function useSignature() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user?.id) {
         console.error("No authenticated user found");
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to save signatures",
+          variant: "destructive"
+        });
         throw new Error('User not authenticated');
       }
       
@@ -98,7 +108,7 @@ export function useSignature() {
         await supabase
           .from('signatures')
           .update({ is_default: false })
-          .not('id', 'is', null);
+          .eq('user_id', session.user.id);
       }
       
       console.log("Inserting signature into database");
@@ -115,6 +125,11 @@ export function useSignature() {
       
       if (error) {
         console.error("Error inserting signature:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to save signature",
+          variant: "destructive"
+        });
         throw error;
       }
       
@@ -143,15 +158,26 @@ export function useSignature() {
       setIsLoading(true);
       console.log("Setting signature as default:", signatureId);
       
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to manage signatures",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       await supabase
         .from('signatures')
         .update({ is_default: false })
-        .not('id', 'is', null);
+        .eq('user_id', session.user.id);
       
       const { error } = await supabase
         .from('signatures')
         .update({ is_default: true })
-        .eq('id', signatureId);
+        .eq('id', signatureId)
+        .eq('user_id', session.user.id);
       
       if (error) {
         console.error("Error updating default signature:", error);
@@ -181,10 +207,21 @@ export function useSignature() {
       setIsLoading(true);
       console.log("Deleting signature:", signatureId);
       
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to manage signatures",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       const { error } = await supabase
         .from('signatures')
         .delete()
-        .eq('id', signatureId);
+        .eq('id', signatureId)
+        .eq('user_id', session.user.id);
       
       if (error) {
         console.error("Error deleting signature:", error);
@@ -213,6 +250,13 @@ export function useSignature() {
       setIsLoading(false);
     }
   };
+  
+  // Add useEffect to check authentication status
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadSavedSignatures();
+    }
+  }, [isAuthenticated]);
 
   return {
     savedSignatures,

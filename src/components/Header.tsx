@@ -1,14 +1,32 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/context/SessionContext';
 import { useStorageLimit } from '@/hooks/useStorageLimit';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/utils/toast';
 
 const Header = () => {
   const { session } = useSession();
+  const navigate = useNavigate();
   const isAuthenticated = !!session?.user;
   const { isPremium } = useStorageLimit();
+
+  const handleAuthAction = async () => {
+    if (isAuthenticated) {
+      try {
+        await supabase.auth.signOut();
+        toast.success("Successfully signed out");
+        navigate('/');
+      } catch (error) {
+        console.error("Sign out error:", error);
+        toast.error("Failed to sign out. Please try again.");
+      }
+    } else {
+      navigate('/auth');
+    }
+  };
 
   return (
     <header className="bg-background border-b">
@@ -17,7 +35,7 @@ const Header = () => {
           <img 
             src="/lovable-uploads/edcfe325-57db-4751-994f-524a88e0def9.png" 
             alt="SignPov" 
-            className="h-10" 
+            className="h-16" 
           />
           {isPremium && (
             <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
@@ -43,10 +61,8 @@ const Header = () => {
           <Button variant="ghost" asChild>
             <Link to="/contact">Contact</Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/auth">
-              {isAuthenticated ? 'Sign Out' : 'Sign In'}
-            </Link>
+          <Button variant="outline" onClick={handleAuthAction}>
+            {isAuthenticated ? 'Sign Out' : 'Sign In'}
           </Button>
         </nav>
       </div>
