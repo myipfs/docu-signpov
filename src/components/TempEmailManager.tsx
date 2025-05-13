@@ -12,13 +12,14 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { getUserTemporaryEmails } from "@/utils/emailUtils";
+import { TempEmail } from "@/types/temp-email";
 import { CreateTempEmailForm } from "./email/CreateTempEmailForm";
 import { TempEmailList } from "./email/TempEmailList";
 import { TempEmailDetails } from "./email/TempEmailDetails";
 
 export function TempEmailManager() {
   const [showEmailInfo, setShowEmailInfo] = useState(false);
-  const [selectedEmail, setSelectedEmail] = useState<any>(null);
+  const [selectedEmail, setSelectedEmail] = useState<TempEmail | null>(null);
 
   const { data: tempEmails, isLoading, error } = useQuery({
     queryKey: ["tempEmails"],
@@ -37,12 +38,12 @@ export function TempEmailManager() {
     }
   }, [error]);
 
-  const handleShowInfo = (email: any) => {
+  const handleShowInfo = (email: TempEmail) => {
     setSelectedEmail(email);
     setShowEmailInfo(true);
   };
 
-  const handleEmailCreated = (email: any) => {
+  const handleEmailCreated = (email: TempEmail) => {
     setSelectedEmail(email);
     setShowEmailInfo(true);
   };

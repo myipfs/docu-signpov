@@ -1,17 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTemporaryEmail, copyToClipboard } from "@/utils/emailUtils";
 import { toast } from "@/components/ui/use-toast";
-
-interface TempEmail {
-  id: string;
-  temp_email: string;
-  forwarding_to: string;
-  expires_at: string;
-}
+import { TempEmail } from "@/types/temp-email";
 
 interface TempEmailItemProps {
   email: TempEmail;

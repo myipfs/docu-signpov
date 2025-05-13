@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTemporaryEmail } from "@/utils/emailUtils";
+import { isValidEmail } from "@/utils/validationUtils";
 
 interface CreateTempEmailFormProps {
   onEmailCreated: (email: any) => void;
@@ -46,8 +47,7 @@ export function CreateTempEmailForm({ onEmailCreated }: CreateTempEmailFormProps
       return;
     }
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(forwardingEmail)) {
+    if (!isValidEmail(forwardingEmail)) {
       toast({
         title: "Error",
         description: "Please enter a valid email address.",

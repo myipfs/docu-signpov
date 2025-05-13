@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
 import { copyToClipboard } from "@/utils/emailUtils";
+import { TempEmail } from "@/types/temp-email";
 import {
   Dialog,
   DialogContent,
@@ -10,14 +10,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-
-interface TempEmail {
-  id: string;
-  temp_email: string;
-  forwarding_to: string;
-  created_at: string;
-  expires_at: string;
-}
 
 interface TempEmailDetailsProps {
   email: TempEmail | null;
