@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 import { toast } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useEncryption } from '@/hooks/useEncryption';
-
-export interface SavedSignature {
-  id: string;
-  signature_data: string;
-  name: string | null;
-  is_default: boolean | null;
-}
+import { SavedSignature } from '@/types/signatures';
+import { 
+  fetchUserSignatures,
+  saveSignature,
+  updateSignatureDefault,
+  deleteUserSignature
+} from '@/services/signatureService';
 
 export function useSignature() {
   const [savedSignatures, setSavedSignatures] = useState<SavedSignature[]>([]);
@@ -33,21 +33,10 @@ export function useSignature() {
         return;
       }
       
-      const { data, error } = await supabase
-        .from('signatures')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error("Error fetching signatures:", error);
-        throw error;
-      }
-      
-      console.log("Signatures fetched:", data?.length || 0);
+      const signatures = await fetchUserSignatures(session.user.id);
       
       const decryptedSignatures = await Promise.all(
-        (data || []).map(async (signature) => {
+        signatures.map(async (signature) => {
           try {
             console.log("Decrypting signature:", signature.id);
             const decryptedData = await decryptData(signature.signature_data);
@@ -103,35 +92,12 @@ export function useSignature() {
       console.log("Encrypting signature data");
       const encryptedSignature = await encryptData(signatureDataUrl);
       
-      if (isDefault) {
-        console.log("Setting as default signature, resetting other defaults");
-        await supabase
-          .from('signatures')
-          .update({ is_default: false })
-          .eq('user_id', session.user.id);
-      }
-      
-      console.log("Inserting signature into database");
-      const { data, error } = await supabase
-        .from('signatures')
-        .insert({
-          signature_data: encryptedSignature,
-          name: signatureName || null,
-          is_default: isDefault,
-          user_id: session.user.id
-        })
-        .select()
-        .single();
-      
-      if (error) {
-        console.error("Error inserting signature:", error);
-        toast({
-          title: "Error",
-          description: error.message || "Failed to save signature",
-          variant: "destructive"
-        });
-        throw error;
-      }
+      await saveSignature(
+        session.user.id,
+        encryptedSignature,
+        signatureName,
+        isDefault
+      );
       
       toast({
         title: "Success",
@@ -168,26 +134,13 @@ export function useSignature() {
         return;
       }
       
-      await supabase
-        .from('signatures')
-        .update({ is_default: false })
-        .eq('user_id', session.user.id);
-      
-      const { error } = await supabase
-        .from('signatures')
-        .update({ is_default: true })
-        .eq('id', signatureId)
-        .eq('user_id', session.user.id);
-      
-      if (error) {
-        console.error("Error updating default signature:", error);
-        throw error;
-      }
+      await updateSignatureDefault(session.user.id, signatureId);
       
       toast({
         title: "Success",
         description: "Default signature updated"
       });
+      
       await loadSavedSignatures();
       
     } catch (error) {
@@ -217,16 +170,7 @@ export function useSignature() {
         return;
       }
       
-      const { error } = await supabase
-        .from('signatures')
-        .delete()
-        .eq('id', signatureId)
-        .eq('user_id', session.user.id);
-      
-      if (error) {
-        console.error("Error deleting signature:", error);
-        throw error;
-      }
+      await deleteUserSignature(session.user.id, signatureId);
       
       toast({
         title: "Success",
