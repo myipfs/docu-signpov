@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, Eraser } from 'lucide-react';
-import type { SavedSignature } from '@/hooks/useSignature';
+import type { SavedSignature } from '@/types/signatures';
 
 interface SavedSignaturesProps {
   signatures: SavedSignature[];
