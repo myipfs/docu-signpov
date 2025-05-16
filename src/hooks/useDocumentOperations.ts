@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/utils/toast';
@@ -159,7 +158,7 @@ export const useDocumentOperations = () => {
   };
 
   const downloadDocument = (documentTitle: string, content: string) => {
-    // Create a blob with the content
+    // Create a blob with the current content (not the original content)
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     

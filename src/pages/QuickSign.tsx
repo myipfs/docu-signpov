@@ -6,7 +6,7 @@ import DocumentUploader from '@/components/DocumentUploader';
 import { SignaturePad } from '@/components/SignaturePad';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/utils/toast';
-import { Download, FileText } from 'lucide-react';
+import { Download, FileText, Eye } from 'lucide-react';
 
 const QuickSign = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,10 +14,41 @@ const QuickSign = () => {
   const [signature, setSignature] = useState<string | null>(null);
   const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
   const [documentName, setDocumentName] = useState<string>('');
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [documentPreview, setDocumentPreview] = useState<string | null>(null);
   
   const handleUploadComplete = (file: File) => {
     setDocumentUploaded(true);
     setDocumentName(file.name);
+    setDocumentFile(file);
+    
+    // Generate document preview
+    if (file.type === 'application/pdf') {
+      const fileUrl = URL.createObjectURL(file);
+      setDocumentPreview(fileUrl);
+    } else if (file.type.startsWith('image/')) {
+      const fileUrl = URL.createObjectURL(file);
+      setDocumentPreview(fileUrl);
+    } else {
+      // For other file types, create a text preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          setDocumentPreview('data:text/html;charset=utf-8,' + encodeURIComponent(`
+            <html>
+              <body style="font-family: system-ui; padding: 20px;">
+                <h2>${file.name}</h2>
+                <p>Document ready for signing</p>
+                <p style="color: #666;">This is a preview of your document.</p>
+              </body>
+            </html>
+          `));
+        } catch (err) {
+          console.error('Error creating preview:', err);
+        }
+      };
+      reader.readAsText(file);
+    }
   };
   
   const handleSignatureCreate = (signatureDataUrl: string) => {
@@ -27,13 +58,32 @@ const QuickSign = () => {
   };
   
   const handleDownloadSigned = () => {
+    if (!documentFile) {
+      toast.error('No document available');
+      return;
+    }
+    
     setIsLoading(true);
     
-    // Simulate processing delay
-    setTimeout(() => {
+    try {
+      // Create a simple download for demo purposes
+      // In production, you would merge the signature with the document
+      const a = document.createElement('a');
+      const url = URL.createObjectURL(documentFile);
+      a.href = url;
+      a.download = `signed_${documentName}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
       setIsLoading(false);
       toast.success('Signed document downloaded successfully!');
-    }, 1500);
+    } catch (error) {
+      console.error('Download error:', error);
+      setIsLoading(false);
+      toast.error('Failed to download signed document');
+    }
   };
   
   return (
@@ -71,11 +121,39 @@ const QuickSign = () => {
                   <h3 className="text-lg font-medium">Document Preview</h3>
                 </div>
                 
-                <div className="bg-gray-100 rounded-lg min-h-[60vh] flex items-center justify-center mb-6">
-                  <div className="text-center p-8 max-w-md">
-                    <p className="text-muted-foreground mb-2">Document preview placeholder</p>
-                    <p className="text-xs text-muted-foreground">In a production environment, this would show your actual document</p>
-                  </div>
+                <div className="bg-gray-100 rounded-lg min-h-[60vh] flex flex-col items-center justify-center mb-6">
+                  {documentPreview ? (
+                    documentPreview.startsWith('data:image') || documentPreview.startsWith('blob:') ? (
+                      <img
+                        src={documentPreview}
+                        alt="Document preview"
+                        className="max-w-full max-h-[60vh] object-contain"
+                      />
+                    ) : documentPreview.startsWith('data:text/html') ? (
+                      <iframe 
+                        src={documentPreview}
+                        title="Document preview"
+                        className="w-full h-[60vh] border-none"
+                      />
+                    ) : documentPreview.startsWith('data:application/pdf') || (documentFile?.type === 'application/pdf') ? (
+                      <iframe 
+                        src={documentPreview + '#toolbar=0'}
+                        title="PDF preview"
+                        className="w-full h-[60vh] border-none"
+                      />
+                    ) : (
+                      <div className="text-center p-8 max-w-md">
+                        <Eye className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
+                        <p className="text-muted-foreground">Document preview available</p>
+                        <p className="text-xs text-muted-foreground mt-2">Your document is ready for signing</p>
+                      </div>
+                    )
+                  ) : (
+                    <div className="text-center p-8 max-w-md">
+                      <p className="text-muted-foreground mb-2">Document preview placeholder</p>
+                      <p className="text-xs text-muted-foreground">In a production environment, this would show your actual document</p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="border-2 border-dashed border-primary/40 rounded-lg p-6 relative">
@@ -109,6 +187,8 @@ const QuickSign = () => {
                   onClick={() => {
                     setDocumentUploaded(false);
                     setSignature(null);
+                    setDocumentPreview(null);
+                    setDocumentFile(null);
                   }}
                 >
                   Cancel

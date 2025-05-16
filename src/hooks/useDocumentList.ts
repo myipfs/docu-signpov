@@ -1,9 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { SavedDocument } from '@/types/document';
 import { toast } from '@/utils/toast';
+
+// Make sure the document editing route is properly handled
+// Add route check to the top of the file to ensure consistent behavior
+const DOCUMENT_EDIT_ROUTE = '/document-editor';
 
 export const useDocumentList = (userId?: string) => {
   const navigate = useNavigate();
@@ -43,8 +46,9 @@ export const useDocumentList = (userId?: string) => {
     fetchDocuments();
   }, [userId]);
 
+  // Inside the handleEdit function, update the navigation path:
   const handleEdit = (id: string) => {
-    navigate(`/document-editor/${id}`);
+    navigate(`${DOCUMENT_EDIT_ROUTE}/${id}`);
   };
 
   const handleDelete = async (id: string) => {

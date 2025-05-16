@@ -67,6 +67,7 @@ export const useTemplateEditor = (templateId: string | undefined, templates: Tem
   };
 
   const handleDownload = () => {
+    // Use the current content, not the original template
     downloadDocument(documentTitle, content);
   };
 

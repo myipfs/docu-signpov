@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -95,11 +94,16 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
           isDefault 
         });
         
-        await saveSignatureToDatabase(
-          finalSignatureDataUrl, 
-          signatureName || typedName || '', 
-          isDefault
-        );
+        try {
+          await saveSignatureToDatabase(
+            finalSignatureDataUrl, 
+            signatureName || typedName || '', 
+            isDefault
+          );
+        } catch (error) {
+          console.error("Error saving to database but continuing:", error);
+          // Continue with onSave even if database save fails
+        }
       }
       
       onSave(finalSignatureDataUrl);

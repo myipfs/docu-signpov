@@ -1,4 +1,3 @@
-
 /**
  * Client-side encryption utilities using the Web Crypto API
  * This module provides functions for encrypting and decrypting data
@@ -38,7 +37,7 @@ export async function deriveKey(password: string, salt: Uint8Array): Promise<Cry
     },
     keyMaterial,
     { name: 'AES-GCM', length: KEY_LENGTH },
-    false,
+    true, // Set to true to make keys extractable
     ['encrypt', 'decrypt']
   );
 }
@@ -52,7 +51,7 @@ export async function generateEncryptionKey(): Promise<CryptoKey> {
       name: 'AES-GCM',
       length: KEY_LENGTH
     },
-    true, // extractable
+    true, // Make key extractable
     ['encrypt', 'decrypt']
   );
 }
