@@ -1,14 +1,7 @@
 
 import { AlertCircle } from "lucide-react";
 import { TempEmailItem } from "./TempEmailItem";
-
-interface TempEmail {
-  id: string;
-  temp_email: string;
-  forwarding_to: string;
-  expires_at: string;
-  created_at: string;
-}
+import { TempEmail } from "@/types/temp-email";
 
 interface TempEmailListProps {
   emails: TempEmail[] | undefined;
