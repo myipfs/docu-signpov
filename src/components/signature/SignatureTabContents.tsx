@@ -1,11 +1,10 @@
 
 import React from 'react';
 import { TabsContent } from '@/components/ui/tabs';
-import { SignatureCanvas } from './SignatureCanvas';
-import { TypedSignature } from './TypedSignature';
-import { UploadedSignature } from './UploadedSignature';
-import { SavedSignatures } from './SavedSignatures';
-import { SaveOptions } from './SaveOptions';
+import { DrawSignatureTab } from './DrawSignatureTab';
+import { TypeSignatureTab } from './TypeSignatureTab';
+import { UploadSignatureTab } from './UploadSignatureTab';
+import { SavedSignaturesTab } from './SavedSignaturesTab';
 
 interface SignatureTabContentsProps {
   activeTab: 'draw' | 'type' | 'upload' | 'saved';
@@ -51,9 +50,8 @@ export function SignatureTabContents({
   return (
     <>
       <TabsContent value="draw" className="mt-4">
-        <SignatureCanvas onDataUrlChange={onDataUrlChange} />
-        
-        <SaveOptions 
+        <DrawSignatureTab
+          onDataUrlChange={onDataUrlChange}
           isAuthenticated={isAuthenticated}
           saveToAccount={saveToAccount}
           onSaveToAccountChange={onSaveToAccountChange}
@@ -65,13 +63,10 @@ export function SignatureTabContents({
       </TabsContent>
       
       <TabsContent value="type" className="mt-4">
-        <TypedSignature 
+        <TypeSignatureTab 
           initialName={initialName}
           onDataUrlChange={onDataUrlChange}
           onNameChange={onNameChange}
-        />
-        
-        <SaveOptions 
           isAuthenticated={isAuthenticated}
           saveToAccount={saveToAccount}
           onSaveToAccountChange={onSaveToAccountChange}
@@ -83,24 +78,22 @@ export function SignatureTabContents({
       </TabsContent>
       
       <TabsContent value="upload" className="mt-4">
-        <UploadedSignature onDataUrlChange={onDataUrlChange} />
-        
-        {isAuthenticated && signatureDataUrl && (
-          <SaveOptions 
-            isAuthenticated={isAuthenticated}
-            saveToAccount={saveToAccount}
-            onSaveToAccountChange={onSaveToAccountChange}
-            signatureName={signatureName}
-            onSignatureNameChange={onSignatureNameChange}
-            isDefault={isDefault}
-            onIsDefaultChange={onIsDefaultChange}
-          />
-        )}
+        <UploadSignatureTab 
+          onDataUrlChange={onDataUrlChange}
+          isAuthenticated={isAuthenticated}
+          saveToAccount={saveToAccount}
+          onSaveToAccountChange={onSaveToAccountChange}
+          signatureName={signatureName}
+          onSignatureNameChange={onSignatureNameChange}
+          isDefault={isDefault}
+          onIsDefaultChange={onIsDefaultChange}
+          signatureDataUrl={signatureDataUrl}
+        />
       </TabsContent>
       
       {isAuthenticated && (
         <TabsContent value="saved" className="mt-4">
-          <SavedSignatures 
+          <SavedSignaturesTab 
             signatures={savedSignatures}
             selectedSignatureId={selectedSignatureId}
             onSelectSignature={onSelectSignature}
