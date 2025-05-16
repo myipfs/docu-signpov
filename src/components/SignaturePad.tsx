@@ -1,15 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Tabs } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
-import { SignatureCanvas } from './signature/SignatureCanvas';
-import { TypedSignature } from './signature/TypedSignature';
-import { UploadedSignature } from './signature/UploadedSignature';
-import { SavedSignatures } from './signature/SavedSignatures';
-import { SaveOptions } from './signature/SaveOptions';
 import { useSignature } from '@/hooks/useSignature';
 import { supabase } from '@/integrations/supabase/client';
+
+import { SignatureModalHeader } from './signature/SignatureModalHeader';
+import { SignatureFooter } from './signature/SignatureFooter';
+import { SignatureTabs } from './signature/SignatureTabs';
+import { SignatureTabContents } from './signature/SignatureTabContents';
 
 interface SignaturePadProps {
   open: boolean;
@@ -123,97 +123,38 @@ export function SignaturePad({ open, onClose, onSave, initialName = '' }: Signat
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Create Your Signature</DialogTitle>
-        </DialogHeader>
+        <SignatureModalHeader />
         
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-          <TabsList className={`grid ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'}`}>
-            <TabsTrigger value="draw">Draw</TabsTrigger>
-            <TabsTrigger value="type">Type</TabsTrigger>
-            <TabsTrigger value="upload">Upload</TabsTrigger>
-            {isAuthenticated && (
-              <TabsTrigger value="saved">Saved</TabsTrigger>
-            )}
-          </TabsList>
+          <SignatureTabs isAuthenticated={isAuthenticated} />
           
-          <TabsContent value="draw" className="mt-4">
-            <SignatureCanvas onDataUrlChange={handleDrawingChange} />
-            
-            <SaveOptions 
-              isAuthenticated={isAuthenticated}
-              saveToAccount={saveToAccount}
-              onSaveToAccountChange={setSaveToAccount}
-              signatureName={signatureName}
-              onSignatureNameChange={setSignatureName}
-              isDefault={isDefault}
-              onIsDefaultChange={setIsDefault}
-            />
-          </TabsContent>
-          
-          <TabsContent value="type" className="mt-4">
-            <TypedSignature 
-              initialName={initialName}
-              onDataUrlChange={handleDrawingChange}
-              onNameChange={setTypedName}
-            />
-            
-            <SaveOptions 
-              isAuthenticated={isAuthenticated}
-              saveToAccount={saveToAccount}
-              onSaveToAccountChange={setSaveToAccount}
-              signatureName={signatureName}
-              onSignatureNameChange={setSignatureName}
-              isDefault={isDefault}
-              onIsDefaultChange={setIsDefault}
-            />
-          </TabsContent>
-          
-          <TabsContent value="upload" className="mt-4">
-            <UploadedSignature onDataUrlChange={handleDrawingChange} />
-            
-            {isAuthenticated && signatureDataUrl && (
-              <SaveOptions 
-                isAuthenticated={isAuthenticated}
-                saveToAccount={saveToAccount}
-                onSaveToAccountChange={setSaveToAccount}
-                signatureName={signatureName}
-                onSignatureNameChange={setSignatureName}
-                isDefault={isDefault}
-                onIsDefaultChange={setIsDefault}
-              />
-            )}
-          </TabsContent>
-          
-          {isAuthenticated && (
-            <TabsContent value="saved" className="mt-4">
-              <SavedSignatures 
-                signatures={savedSignatures}
-                selectedSignatureId={selectedSignatureId}
-                onSelectSignature={setSelectedSignatureId}
-                onSetDefault={setSignatureAsDefault}
-                onDelete={deleteSignature}
-                isLoading={isLoading}
-              />
-            </TabsContent>
-          )}
+          <SignatureTabContents 
+            activeTab={activeTab}
+            initialName={initialName}
+            onDataUrlChange={handleDrawingChange}
+            onNameChange={setTypedName}
+            isAuthenticated={isAuthenticated}
+            saveToAccount={saveToAccount}
+            onSaveToAccountChange={setSaveToAccount}
+            signatureName={signatureName}
+            onSignatureNameChange={setSignatureName}
+            isDefault={isDefault}
+            onIsDefaultChange={setIsDefault}
+            savedSignatures={savedSignatures}
+            selectedSignatureId={selectedSignatureId}
+            onSelectSignature={setSelectedSignatureId}
+            onSetDefault={setSignatureAsDefault}
+            onDelete={deleteSignature}
+            isLoading={isLoading}
+            signatureDataUrl={signatureDataUrl}
+          />
         </Tabs>
         
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2"></div>
-                Processing...
-              </>
-            ) : (
-              'Save Signature'
-            )}
-          </Button>
-        </DialogFooter>
+        <SignatureFooter 
+          onClose={onClose} 
+          onSave={handleSave} 
+          isLoading={isLoading} 
+        />
       </DialogContent>
     </Dialog>
   );

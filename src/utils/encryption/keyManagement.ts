@@ -1,56 +1,20 @@
 
 /**
- * Key management utilities for client-side encryption
- * Handles key derivation, generation, import/export, and storage
+ * Utility functions for managing encryption keys
  */
 
-// Key derivation parameters
-const SALT_LENGTH = 16;
-const KEY_LENGTH = 256; // bits
-const ITERATIONS = 100000;
+import { bufferToBase64, base64ToBuffer } from './encodingUtils';
 
 /**
- * Derives an encryption key from a password
- */
-export async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
-  // Convert password to key material
-  const encoder = new TextEncoder();
-  const passwordBuffer = encoder.encode(password);
-  
-  // Import the password as key material
-  const keyMaterial = await window.crypto.subtle.importKey(
-    'raw',
-    passwordBuffer,
-    { name: 'PBKDF2' },
-    false,
-    ['deriveKey']
-  );
-  
-  // Derive the actual encryption key
-  return window.crypto.subtle.deriveKey(
-    {
-      name: 'PBKDF2',
-      salt,
-      iterations: ITERATIONS,
-      hash: 'SHA-256'
-    },
-    keyMaterial,
-    { name: 'AES-GCM', length: KEY_LENGTH },
-    true, // Set to true to make keys extractable
-    ['encrypt', 'decrypt']
-  );
-}
-
-/**
- * Generate a random encryption key
+ * Generates a new AES-GCM encryption key
  */
 export async function generateEncryptionKey(): Promise<CryptoKey> {
   return window.crypto.subtle.generateKey(
     {
       name: 'AES-GCM',
-      length: KEY_LENGTH
+      length: 256
     },
-    true, // Make key extractable
+    true, // extractable - making key extractable to fix the error
     ['encrypt', 'decrypt']
   );
 }
@@ -59,69 +23,53 @@ export async function generateEncryptionKey(): Promise<CryptoKey> {
  * Exports a CryptoKey to a base64 string for storage
  */
 export async function exportKey(key: CryptoKey): Promise<string> {
-  const exported = await window.crypto.subtle.exportKey('raw', key);
-  return bufferToBase64(new Uint8Array(exported));
+  const exportedKey = await window.crypto.subtle.exportKey('raw', key);
+  return bufferToBase64(new Uint8Array(exportedKey));
 }
 
 /**
- * Imports a base64 string key back to a CryptoKey
+ * Imports a base64 string key back to a CryptoKey object
  */
-export async function importKey(keyString: string): Promise<CryptoKey> {
-  const keyData = base64ToBuffer(keyString);
+export async function importKey(keyData: string): Promise<CryptoKey> {
+  const keyBuffer = base64ToBuffer(keyData);
   return window.crypto.subtle.importKey(
     'raw',
-    keyData,
-    { name: 'AES-GCM', length: KEY_LENGTH },
-    false,
+    keyBuffer,
+    {
+      name: 'AES-GCM',
+      length: 256
+    },
+    true, // extractable - making key extractable to fix the error
     ['encrypt', 'decrypt']
   );
 }
 
+// Local storage key prefix
+const KEY_STORAGE_PREFIX = 'encryption_key_';
+
 /**
- * Manages encryption keys in local storage
+ * Sets up encryption for a user, generating and storing keys
  */
-export function storeEncryptionKey(key: string, userId: string): void {
-  localStorage.setItem(`encryption_key_${userId}`, key);
+export async function setupUserEncryption(userId: string): Promise<string> {
+  const key = await generateEncryptionKey();
+  const exportedKey = await exportKey(key);
+  
+  // Store the key in local storage with the user ID
+  localStorage.setItem(`${KEY_STORAGE_PREFIX}${userId}`, exportedKey);
+  
+  return exportedKey;
 }
 
+/**
+ * Retrieves the encryption key for a specific user
+ */
 export function retrieveEncryptionKey(userId: string): string | null {
-  return localStorage.getItem(`encryption_key_${userId}`);
+  return localStorage.getItem(`${KEY_STORAGE_PREFIX}${userId}`);
 }
 
 /**
- * Sets up encryption for a new user
+ * Removes the encryption key for a specific user
  */
-export async function setupUserEncryption(userId: string, password?: string): Promise<string> {
-  // Use provided password or generate a random one
-  const userPassword = password || generateRandomPassword(16);
-  
-  // Generate a random salt
-  const salt = window.crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
-  
-  // Derive the key
-  const key = await deriveKey(userPassword, salt);
-  
-  // Export the key to a string
-  const keyString = await exportKey(key);
-  
-  // Store the key
-  storeEncryptionKey(keyString, userId);
-  
-  // Return the password in case it was generated
-  return userPassword;
-}
-
-/**
- * Generates a cryptographically secure random password
- */
-export function generateRandomPassword(length: number): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-  const randomValues = window.crypto.getRandomValues(new Uint8Array(length));
-  let result = '';
-  
-  for (let i = 0; i < length; i++) {
-    result += chars[randomValues[i] % chars.length];
-  }
-  
-  return result;
+export function clearEncryptionKey(userId: string): void {
+  localStorage.removeItem(`${KEY_STORAGE_PREFIX}${userId}`);
 }
