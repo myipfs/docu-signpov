@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -58,27 +57,88 @@ const QuickSign = () => {
   };
   
   const handleDownloadSigned = () => {
-    if (!documentFile) {
-      toast.error('No document available');
+    if (!documentFile || !signature) {
+      toast.error('No document or signature available');
       return;
     }
     
     setIsLoading(true);
     
     try {
-      // Create a simple download for demo purposes
-      // In production, you would merge the signature with the document
-      const a = document.createElement('a');
-      const url = URL.createObjectURL(documentFile);
-      a.href = url;
-      a.download = `signed_${documentName}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      setIsLoading(false);
-      toast.success('Signed document downloaded successfully!');
+      // Create a combined document with signature for demo purposes
+      // In production, you would merge the signature with the document properly
+      if (documentFile.type === 'text/plain' || documentFile.name.endsWith('.txt')) {
+        // For text files, append signature information
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const originalContent = e.target?.result as string || '';
+          const signedContent = `${originalContent}\n\n--- DIGITALLY SIGNED ---\n[Signature Applied]\nSigned on: ${new Date().toLocaleDateString()}\n`;
+          
+          const blob = new Blob([signedContent], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `signed_${documentName}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          setIsLoading(false);
+          toast.success('Signed document downloaded successfully!');
+        };
+        reader.readAsText(documentFile);
+      } else {
+        // For other file types, create an HTML version with the signature
+        const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Signed Document: ${documentName}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 40px; }
+              .document-header { border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+              .signature-section { border-top: 1px solid #ccc; margin-top: 40px; padding-top: 20px; }
+              .signature-image { max-width: 200px; height: auto; border: 1px solid #ddd; padding: 10px; }
+            </style>
+          </head>
+          <body>
+            <div class="document-header">
+              <h1>Signed Document</h1>
+              <p><strong>Original File:</strong> ${documentName}</p>
+              <p><strong>Signed on:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+            </div>
+            
+            <div class="document-content">
+              <p>This document has been digitally signed. The original file "${documentName}" has been processed and includes the signature below.</p>
+              <p><em>Note: In a production environment, this would show the actual document content with the signature embedded.</em></p>
+            </div>
+            
+            <div class="signature-section">
+              <h3>Digital Signature</h3>
+              <img src="${signature}" alt="Digital Signature" class="signature-image" />
+              <p><strong>Status:</strong> Signed</p>
+              <p><strong>Signature Type:</strong> Electronic Signature</p>
+            </div>
+          </body>
+          </html>
+        `;
+        
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `signed_${documentName.replace(/\.[^/.]+$/, '')}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        setIsLoading(false);
+        toast.success('Signed document downloaded successfully!');
+      }
     } catch (error) {
       console.error('Download error:', error);
       setIsLoading(false);
@@ -156,19 +216,21 @@ const QuickSign = () => {
                   )}
                 </div>
                 
-                <div className="border-2 border-dashed border-primary/40 rounded-lg p-6 relative">
+                <div className="border-2 border-dashed border-primary/40 rounded-lg p-6 relative min-h-[100px] flex items-center justify-center">
                   {signature ? (
-                    <img 
-                      src={signature} 
-                      alt="Your signature" 
-                      className="max-h-16 mx-auto"
-                    />
+                    <div className="text-center">
+                      <img 
+                        src={signature} 
+                        alt="Your signature" 
+                        className="max-h-20 mx-auto mb-2"
+                      />
+                      <p className="text-sm text-green-600 font-medium">✓ Signature Applied</p>
+                    </div>
                   ) : (
                     <div className="text-center">
-                      <p className="text-primary/60 font-medium">Add your signature here</p>
+                      <p className="text-primary/60 font-medium mb-2">Add your signature here</p>
                       <Button 
                         variant="outline" 
-                        className="mt-2"
                         onClick={() => setIsSignatureModalOpen(true)}
                       >
                         Click to sign

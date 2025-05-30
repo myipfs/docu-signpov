@@ -46,7 +46,7 @@ export const useDocumentList = (userId?: string) => {
     fetchDocuments();
   }, [userId]);
 
-  // Inside the handleEdit function, update the navigation path:
+  // Fix the handleEdit function to use the correct route:
   const handleEdit = (id: string) => {
     navigate(`${DOCUMENT_EDIT_ROUTE}/${id}`);
   };

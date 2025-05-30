@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -13,12 +12,8 @@ const SignDocuments = () => {
   const { session } = useSession();
 
   const handleUploadDocument = () => {
-    if (!session) {
-      navigate('/auth', { state: { returnTo: '/sign-documents' } });
-      return;
-    }
-    
-    navigate('/editor');
+    // Redirect to sign document page for uploading and signing documents
+    navigate('/sign-document');
   };
   
   const handleQuickSign = () => {

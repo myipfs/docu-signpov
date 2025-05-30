@@ -170,6 +170,10 @@ export type Database = {
           signatures_count: number
         }[]
       }
+      get_user_storage_data: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_user_storage_data_v2: {
         Args: { user_id: string }
         Returns: {
