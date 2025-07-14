@@ -46,7 +46,7 @@ const Plans = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Free Plan */}
             <Card className="glass-card border-2 border-primary/10">
               <CardHeader>
@@ -59,6 +59,7 @@ const Plans = () => {
               
               <CardContent className="space-y-4">
                 <div className="text-3xl font-bold">$0</div>
+                <p className="text-sm text-foreground/60">Support with donations</p>
                 
                 <ul className="space-y-3">
                   <li className="flex items-start">
@@ -80,7 +81,7 @@ const Plans = () => {
                 </ul>
               </CardContent>
               
-              <CardFooter>
+              <CardFooter className="flex flex-col gap-2">
                 <Button 
                   onClick={handleGetStarted} 
                   variant="outline" 
@@ -88,27 +89,31 @@ const Plans = () => {
                 >
                   {session ? "Go to Dashboard" : "Get Started"}
                 </Button>
+                <Button 
+                  asChild
+                  variant="ghost" 
+                  size="sm"
+                  className="w-full text-xs"
+                >
+                  <a href="https://buymeacoffee.com/signpov" target="_blank" rel="noopener noreferrer">
+                    ☕ Buy me a coffee
+                  </a>
+                </Button>
               </CardFooter>
             </Card>
             
-            {/* Premium Plan */}
-            <Card className="glass-card border-2 border-primary relative">
-              <div className="absolute -top-4 inset-x-0 flex justify-center">
-                <div className="px-4 py-1 bg-primary text-white text-sm font-medium rounded-full">
-                  Recommended
-                </div>
-              </div>
-              
+            {/* Standard Plan */}
+            <Card className="glass-card border-2 border-primary/20">
               <CardHeader>
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-                  Premium
+                  Standard
                 </div>
-                <CardTitle className="text-3xl font-bold">Premium</CardTitle>
-                <CardDescription>Advanced features for power users</CardDescription>
+                <CardTitle className="text-3xl font-bold">Standard</CardTitle>
+                <CardDescription>Enhanced features for professionals</CardDescription>
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <div className="text-3xl font-bold">$4.99<span className="text-lg text-foreground/70">/month</span></div>
+                <div className="text-3xl font-bold">$5<span className="text-lg text-foreground/70">/month</span></div>
                 
                 <ul className="space-y-3">
                   <li className="flex items-start">
@@ -140,10 +145,76 @@ const Plans = () => {
               
               <CardFooter>
                 <Button 
-                  onClick={handleUpgrade} 
+                  asChild
+                  variant="outline"
                   className="w-full"
                 >
-                  Upgrade Now
+                  <a href="https://buymeacoffee.com/signpov" target="_blank" rel="noopener noreferrer">
+                    Subscribe to Standard
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* AI Pro Plan */}
+            <Card className="glass-card border-2 border-primary relative">
+              <div className="absolute -top-4 inset-x-0 flex justify-center">
+                <div className="px-4 py-1 bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-medium rounded-full">
+                  🤖 AI Powered
+                </div>
+              </div>
+              
+              <CardHeader>
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-primary/10 to-purple-600/10 text-primary text-xs font-medium mb-4">
+                  AI Pro
+                </div>
+                <CardTitle className="text-3xl font-bold">AI Pro</CardTitle>
+                <CardDescription>Agentic AI workflows & automation</CardDescription>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                <div className="text-3xl font-bold">$20<span className="text-lg text-foreground/70">/month</span></div>
+                
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Everything in Standard</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span><strong>5GB</strong> storage (5x more)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>🤖 Chat with PDF documents</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>🤖 AI Proposal Drafter</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>🤖 Offer Letter Generator</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>🤖 Legal Document Research</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>🤖 Document Query & Summary</span>
+                  </li>
+                </ul>
+              </CardContent>
+              
+              <CardFooter>
+                <Button 
+                  asChild
+                  className="w-full"
+                >
+                  <a href="https://buymeacoffee.com/signpov" target="_blank" rel="noopener noreferrer">
+                    Upgrade to AI Pro
+                  </a>
                 </Button>
               </CardFooter>
             </Card>

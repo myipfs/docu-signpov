@@ -47,6 +47,9 @@ const Header = () => {
           <Button variant="ghost" asChild>
             <Link to="/templates">Templates</Link>
           </Button>
+          <Button variant="ghost" asChild>
+            <Link to="/ai-templates">🤖 AI Pro</Link>
+          </Button>
           {isAuthenticated && (
             <Button variant="ghost" asChild>
               <Link to="/my-documents">My Documents</Link>

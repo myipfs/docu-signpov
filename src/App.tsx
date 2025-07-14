@@ -26,6 +26,7 @@ import ViewDocument from './pages/ViewDocument';
 import Auth from './pages/Auth';
 import Plans from './pages/Plans';
 import SignDocuments from './pages/SignDocuments';
+import AITemplates from './pages/AITemplates';
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => {
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/my-documents" element={<MyDocuments />} />
               <Route path="/view-document/:id" element={<ViewDocument />} />
+              <Route path="/ai-templates" element={<AITemplates />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
