@@ -28,12 +28,8 @@ const AITemplates = () => {
       return;
     }
     
-    // This would check user subscription status
-    // For now, show upgrade message
-    toast({
-      title: "AI Pro Required",
-      description: "This AI feature requires an AI Pro subscription. Upgrade to access agentic AI workflows!",
-    });
+    // Navigate to AI workflow interface
+    navigate(`/ai-workflow/${templateId}`);
   };
 
   const aiTemplates = [
