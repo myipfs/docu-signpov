@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, FileText, Download, Share2, Loader2 } from 'lucide-react';
+import { Save, FileText, Download, Share2, Loader2, Users } from 'lucide-react';
 import TextEditor from '@/components/TextEditor';
+import SignatureTracker from '@/components/signature/SignatureTracker';
 import { toast } from '@/utils/toast';
 import { useSession } from '@/context/SessionContext';
 import { useDocumentOperations } from '@/hooks/useDocumentOperations';
@@ -21,6 +22,28 @@ const DocumentEditor = () => {
   const [content, setContent] = useState('');
   const [activeTab, setActiveTab] = useState('edit');
   const [isLoading, setIsLoading] = useState(id ? true : false);
+  const [signatures, setSignatures] = useState([
+    {
+      id: '1',
+      signerName: 'John Doe',
+      signerEmail: 'john@example.com',
+      status: 'signed' as const,
+      signedAt: new Date('2025-01-15')
+    },
+    {
+      id: '2',
+      signerName: 'Jane Smith',
+      signerEmail: 'jane@example.com',
+      status: 'viewed' as const,
+      viewedAt: new Date('2025-01-16')
+    },
+    {
+      id: '3',
+      signerName: 'Bob Johnson',
+      signerEmail: 'bob@example.com',
+      status: 'pending' as const
+    }
+  ]);
   
   const {
     saveDocument,
@@ -139,6 +162,10 @@ const DocumentEditor = () => {
             </div>
             
             <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => window.open(`/sign/${documentId || id}`, '_blank')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Sign Document
+              </Button>
               <Button variant="outline" size="sm" onClick={handleShare} disabled={isSharing}>
                 {isSharing ? (
                   <>
@@ -172,34 +199,42 @@ const DocumentEditor = () => {
             </div>
           </div>
           
-          <Card className="p-0 min-h-[calc(100vh-250px)]">
-            <Tabs defaultValue={activeTab} className="w-full" onValueChange={setActiveTab}>
-              <div className="border-b px-4">
-                <TabsList className="bg-transparent">
-                  <TabsTrigger value="edit">Edit</TabsTrigger>
-                  <TabsTrigger value="preview">Preview</TabsTrigger>
-                </TabsList>
-              </div>
-              
-              <TabsContent value="edit" className="p-0 m-0">
-                <TextEditor 
-                  content={content} 
-                  setContent={setContent} 
-                />
-              </TabsContent>
-              
-              <TabsContent value="preview" className="p-6 m-0">
-                {content ? (
-                  <div className="prose max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: content }} />
-                ) : (
-                  <div className="text-center text-muted-foreground py-20">
-                    <p>No content to preview yet.</p>
-                    <p className="text-sm">Start editing to see a preview here.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card className="p-0 min-h-[calc(100vh-250px)]">
+                <Tabs value={activeTab} className="w-full" onValueChange={setActiveTab}>
+                  <div className="border-b px-4">
+                    <TabsList className="bg-transparent">
+                      <TabsTrigger value="edit">Edit</TabsTrigger>
+                      <TabsTrigger value="preview">Preview</TabsTrigger>
+                    </TabsList>
                   </div>
-                )}
-              </TabsContent>
-            </Tabs>
-          </Card>
+                  
+                  <TabsContent value="edit" className="p-0 m-0">
+                    <TextEditor 
+                      content={content} 
+                      setContent={setContent} 
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="preview" className="p-6 m-0">
+                    {content ? (
+                      <div className="prose max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: content }} />
+                    ) : (
+                      <div className="text-center text-muted-foreground py-20">
+                        <p>No content to preview yet.</p>
+                        <p className="text-sm">Start editing to see a preview here.</p>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </Card>
+            </div>
+            
+            <div className="lg:col-span-1">
+              <SignatureTracker signatures={signatures} />
+            </div>
+          </div>
           
           {shareUrl && (
             <div className="mt-4 p-4 bg-muted rounded-md">

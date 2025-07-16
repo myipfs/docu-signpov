@@ -50,6 +50,7 @@ const App = () => {
               <Route path="/sign-documents" element={<SignDocuments />} />
               <Route path="/quick-sign" element={<QuickSign />} />
               <Route path="/editor" element={<DocumentEditor />} />
+              <Route path="/document-editor/:id" element={<DocumentEditor />} />
               <Route path="/templates" element={<TemplatesPage />} />
               <Route path="/templates/edit/:id" element={<TemplateEditor />} />
               <Route path="/email-settings" element={<EmailSettings />} />
