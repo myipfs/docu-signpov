@@ -14,6 +14,8 @@ import { toast } from '@/utils/toast';
 import { useSession } from '@/context/SessionContext';
 import { useDocumentOperations } from '@/hooks/useDocumentOperations';
 import { supabase } from '@/integrations/supabase/client';
+import RecipientManager from '@/components/signature/RecipientManager';
+import { useStorageLimit } from '@/hooks/useStorageLimit';
 
 const DocumentEditor = () => {
   const { id } = useParams<{ id?: string }>();
@@ -22,28 +24,9 @@ const DocumentEditor = () => {
   const [content, setContent] = useState('');
   const [activeTab, setActiveTab] = useState('edit');
   const [isLoading, setIsLoading] = useState(id ? true : false);
-  const [signatures, setSignatures] = useState([
-    {
-      id: '1',
-      signerName: 'John Doe',
-      signerEmail: 'john@example.com',
-      status: 'signed' as const,
-      signedAt: new Date('2025-01-15')
-    },
-    {
-      id: '2',
-      signerName: 'Jane Smith',
-      signerEmail: 'jane@example.com',
-      status: 'viewed' as const,
-      viewedAt: new Date('2025-01-16')
-    },
-    {
-      id: '3',
-      signerName: 'Bob Johnson',
-      signerEmail: 'bob@example.com',
-      status: 'pending' as const
-    }
-  ]);
+  const [recipients, setRecipients] = useState([]);
+  const [signatures, setSignatures] = useState([]);
+  const { isPremium } = useStorageLimit();
   
   const {
     saveDocument,
@@ -130,6 +113,72 @@ const DocumentEditor = () => {
     });
   };
 
+  const handleSendSigningRequests = async () => {
+    if (!session?.user) {
+      toast({
+        title: 'Authentication required',
+        description: 'Please sign in to send signing requests.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!isPremium) {
+      toast({
+        title: 'Premium feature',
+        description: 'Sending signing requests requires a paid subscription. Please upgrade your plan.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (recipients.length === 0) {
+      toast({
+        title: 'No recipients',
+        description: 'Please add recipients before sending signing requests.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Save document first if needed
+    if (!documentId && !id) {
+      await handleSave();
+    }
+
+    // Convert recipients to signatures with pending status
+    const newSignatures = recipients.map(recipient => ({
+      id: recipient.id,
+      signerName: recipient.name,
+      signerEmail: recipient.email,
+      status: 'pending' as const
+    }));
+
+    setSignatures(newSignatures);
+
+    // In a real implementation, this would send actual emails
+    // For now, we'll show a success message
+    toast({
+      title: 'Signing requests sent',
+      description: `Signing requests have been sent to ${recipients.length} recipient${recipients.length === 1 ? '' : 's'} using their real email addresses.`,
+    });
+  };
+
+  const handleSignDocument = () => {
+    if (!session?.user) {
+      toast({
+        title: 'Authentication required',
+        description: 'Please sign in to sign documents.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Use user's real email for signing, not temporary email
+    const userEmail = session.user.email;
+    window.open(`/sign/${documentId || id}?email=${encodeURIComponent(userEmail)}`, '_blank');
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -162,7 +211,7 @@ const DocumentEditor = () => {
             </div>
             
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => window.open(`/sign/${documentId || id}`, '_blank')}>
+              <Button variant="outline" size="sm" onClick={handleSignDocument}>
                 <FileText className="mr-2 h-4 w-4" />
                 Sign Document
               </Button>
@@ -231,7 +280,12 @@ const DocumentEditor = () => {
               </Card>
             </div>
             
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-6">
+              <RecipientManager 
+                recipients={recipients}
+                onRecipientsChange={setRecipients}
+                onSendSigningRequests={handleSendSigningRequests}
+              />
               <SignatureTracker signatures={signatures} />
             </div>
           </div>

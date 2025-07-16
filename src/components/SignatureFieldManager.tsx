@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { RecipientManager } from './signature/RecipientManager';
+import RecipientManager from './signature/RecipientManager';
 import { DocumentArea } from './signature/DocumentArea';
 import { Recipient, SignatureFieldData } from '@/types/signature';
 
@@ -35,9 +35,15 @@ export function SignatureFieldManager({
         <div className="bg-card border-b p-4">
           <RecipientManager
             recipients={recipients}
-            onAddRecipient={onAddRecipient}
-            selectedRecipientId={selectedRecipientId}
-            setSelectedRecipientId={setSelectedRecipientId}
+            onRecipientsChange={(newRecipients) => {
+              // Convert to the expected format
+              newRecipients.forEach(recipient => {
+                if (!recipients.find(r => r.id === recipient.id)) {
+                  const { id, ...recipientWithoutId } = recipient;
+                  onAddRecipient(recipientWithoutId);
+                }
+              });
+            }}
           />
         </div>
       )}
