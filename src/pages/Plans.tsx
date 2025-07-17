@@ -72,7 +72,7 @@ const Plans = () => {
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                    <span>5 signature requests per month</span>
+                    <span>5 signature documents per month</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -102,13 +102,13 @@ const Plans = () => {
               </CardFooter>
             </Card>
             
-            {/* Standard Plan */}
+            {/* Premium Plan */}
             <Card className="glass-card border-2 border-primary/20">
               <CardHeader>
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-                  Standard
+                  Premium
                 </div>
-                <CardTitle className="text-3xl font-bold">Standard</CardTitle>
+                <CardTitle className="text-3xl font-bold">Premium</CardTitle>
                 <CardDescription>Enhanced features for professionals</CardDescription>
               </CardHeader>
               
@@ -149,8 +149,8 @@ const Plans = () => {
                   variant="outline"
                   className="w-full"
                 >
-                  <a href="https://buymeacoffee.com/signpov" target="_blank" rel="noopener noreferrer">
-                    Subscribe to Standard
+                  <a href="https://buy.stripe.com/cNi28q1G85x9eYD8cwcwg00" target="_blank" rel="noopener noreferrer">
+                    Subscribe to Premium
                   </a>
                 </Button>
               </CardFooter>
@@ -173,12 +173,12 @@ const Plans = () => {
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <div className="text-3xl font-bold">$20<span className="text-lg text-foreground/70">/month</span></div>
+                <div className="text-3xl font-bold">$18<span className="text-lg text-foreground/70">/month</span></div>
                 
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Everything in Standard</span>
+                    <span>Everything in Premium</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -212,7 +212,7 @@ const Plans = () => {
                   asChild
                   className="w-full"
                 >
-                  <a href="https://buymeacoffee.com/signpov" target="_blank" rel="noopener noreferrer">
+                  <a href="https://buy.stripe.com/dRm9ASacE6BdeYD64ocwg01" target="_blank" rel="noopener noreferrer">
                     Upgrade to AI Pro
                   </a>
                 </Button>

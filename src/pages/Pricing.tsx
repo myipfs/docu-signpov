@@ -14,13 +14,13 @@ const PricingPage = () => {
       <main className="flex-grow py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold mb-4">Simple, <span className="text-gradient">Transparent</span> Pricing</h1>
+            <h1 className="text-4xl font-bold mb-4">Choose Your <span className="text-gradient">Plan</span></h1>
             <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Start signing documents for free. No credit card required.
+              Start signing documents for free or upgrade for additional storage and features
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Free Plan */}
             <div className="glass-card p-8 rounded-xl border-2 border-primary/10 flex flex-col h-full">
               <div className="mb-6">
@@ -28,10 +28,11 @@ const PricingPage = () => {
                   Free Forever
                 </div>
                 <h2 className="text-3xl font-bold mb-2">Free</h2>
-                <p className="text-foreground/70">Essential features for individuals</p>
+                <p className="text-foreground/70">Get started with essential features</p>
               </div>
               
               <div className="text-3xl font-bold mb-6">$0</div>
+              <p className="text-sm text-foreground/60 mb-6">Support with donations</p>
               
               <ul className="space-y-3 mb-8 flex-grow">
                 <li className="flex items-start">
@@ -40,27 +41,33 @@ const PricingPage = () => {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>5 signature requests per month</span>
+                  <span>Basic document templates</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Basic document templates</span>
+                  <span>5 signature documents per month</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
                   <span>Email support</span>
                 </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Standard security</span>
-                </li>
               </ul>
               
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/dashboard">
-                  Get Started
-                </Link>
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/dashboard">Get Started</Link>
+                </Button>
+                <Button 
+                  asChild
+                  variant="ghost" 
+                  size="sm"
+                  className="w-full text-xs"
+                >
+                  <a href="https://buymeacoffee.com/signpov" target="_blank" rel="noopener noreferrer">
+                    ☕ Buy me a coffee
+                  </a>
+                </Button>
+              </div>
             </div>
             
             {/* Premium Plan */}
@@ -76,19 +83,19 @@ const PricingPage = () => {
                   Premium
                 </div>
                 <h2 className="text-3xl font-bold mb-2">Premium</h2>
-                <p className="text-foreground/70">Advanced features for professionals</p>
+                <p className="text-foreground/70">Enhanced features for professionals</p>
               </div>
               
-              <div className="text-3xl font-bold mb-6">$4.99<span className="text-lg font-normal text-foreground/70">/mo</span></div>
+              <div className="text-3xl font-bold mb-6">$5<span className="text-lg font-normal text-foreground/70">/month</span></div>
               
               <ul className="space-y-3 mb-8 flex-grow">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Everything in Free</span>
+                  <span><strong>1GB</strong> storage (2x more than Free)</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span><strong>1GB</strong> storage (2x more)</span>
+                  <span>All templates included</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -96,40 +103,42 @@ const PricingPage = () => {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Temporary email forwarding</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Custom branding</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Advanced templates</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
                   <span>Priority support</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Temporary email feature</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Custom branding options</span>
                 </li>
               </ul>
               
               <Button asChild className="w-full">
-                <Link to="/plans">
+                <a href="https://buy.stripe.com/cNi28q1G85x9eYD8cwcwg00" target="_blank" rel="noopener noreferrer">
                   Upgrade Now
-                </Link>
+                </a>
               </Button>
             </div>
             
-            {/* Enterprise Plan */}
-            <div className="glass-card p-8 rounded-xl border-2 border-primary/10 flex flex-col h-full">
-              <div className="mb-6">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-                  Enterprise
+            {/* AI Pro Plan */}
+            <div className="glass-card p-8 rounded-xl border-2 border-primary/10 relative flex flex-col h-full">
+              <div className="absolute -top-4 inset-x-0 flex justify-center">
+                <div className="px-4 py-1 bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-medium rounded-full">
+                  🤖 AI Powered
                 </div>
-                <h2 className="text-3xl font-bold mb-2">Enterprise</h2>
-                <p className="text-foreground/70">For organizations with specific needs</p>
               </div>
               
-              <div className="text-3xl font-bold mb-6">Custom</div>
+              <div className="mb-6 mt-2">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-primary/10 to-purple-600/10 text-primary text-xs font-medium mb-4">
+                  AI Pro
+                </div>
+                <h2 className="text-3xl font-bold mb-2">AI Pro</h2>
+                <p className="text-foreground/70">Agentic AI workflows & automation</p>
+              </div>
+              
+              <div className="text-3xl font-bold mb-6">$18<span className="text-lg font-normal text-foreground/70">/month</span></div>
               
               <ul className="space-y-3 mb-8 flex-grow">
                 <li className="flex items-start">
@@ -138,30 +147,34 @@ const PricingPage = () => {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>SSO authentication</span>
+                  <span><strong>5GB</strong> storage (5x more)</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Dedicated account manager</span>
+                  <span>🤖 Chat with PDF documents</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Custom integrations</span>
+                  <span>🤖 AI Proposal Drafter</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Enterprise SLA</span>
+                  <span>🤖 Offer Letter Generator</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Advanced security options</span>
+                  <span>🤖 Legal Document Research</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span>🤖 Document Query & Summary</span>
                 </li>
               </ul>
               
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/contact">
-                  Contact Sales
-                </Link>
+              <Button asChild className="w-full">
+                <a href="https://buy.stripe.com/dRm9ASacE6BdeYD64ocwg01" target="_blank" rel="noopener noreferrer">
+                  Upgrade to AI Pro
+                </a>
               </Button>
             </div>
           </div>
@@ -174,17 +187,17 @@ const PricingPage = () => {
               <div className="glass-card p-6 rounded-xl">
                 <h3 className="text-lg font-medium mb-3">Is there really a free plan?</h3>
                 <p className="text-foreground/70">
-                  Yes! Our free plan offers 500MB of storage and 5 signature requests per month forever.
+                  Yes! Our free plan offers 500MB of storage and 5 signature documents per month forever.
                   It's perfect for individuals and small businesses with occasional signing needs.
                 </p>
               </div>
               
               <div className="glass-card p-6 rounded-xl">
-                <h3 className="text-lg font-medium mb-3">What counts as a signature request?</h3>
+                <h3 className="text-lg font-medium mb-3">What counts as a signature document?</h3>
                 <p className="text-foreground/70">
-                  A signature request is counted each time you send a document to be signed, regardless
-                  of how many signatures are needed on the document. Multiple signers on one document
-                  still count as one request.
+                  A signature document is counted each time you upload a document for signing or use a template.
+                  For free users, this includes personal document signing. Sending signature requests to others
+                  is only available on paid plans.
                 </p>
               </div>
               
