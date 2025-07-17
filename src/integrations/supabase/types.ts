@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          granted_at: string
+          granted_by: string | null
+          id: string
+          is_active: boolean
+          role: Database["public"]["Enums"]["admin_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           content: string
@@ -166,6 +202,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_admin_analytics: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_admin_role: {
+        Args: { user_id?: string }
+        Returns: Database["public"]["Enums"]["admin_role"]
+      }
       get_and_track_storage: {
         Args: { user_id: string }
         Returns: {
@@ -189,9 +233,13 @@ export type Database = {
           storage_buckets: string[]
         }[]
       }
+      is_admin: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      admin_role: "super_admin" | "admin" | "moderator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -318,6 +366,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      admin_role: ["super_admin", "admin", "moderator"],
+    },
   },
 } as const
