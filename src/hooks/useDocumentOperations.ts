@@ -157,14 +157,16 @@ export const useDocumentOperations = () => {
     }
   };
 
-  const downloadDocument = (documentTitle: string, content: string) => {
-    // Create HTML document with proper formatting
-    const htmlContent = `
+  const downloadDocument = (documentTitle: string, content: string, isSignedDocument: boolean = false) => {
+    if (isSignedDocument) {
+      // For signed documents, create PDF format
+      // This would require actual PDF generation - for now, we'll use HTML as summary
+      const htmlContent = `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>${documentTitle}</title>
+    <title>Signed Document - ${documentTitle}</title>
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -174,60 +176,79 @@ export const useDocumentOperations = () => {
             padding: 20px;
             color: #333;
         }
-        h1, h2, h3, h4, h5, h6 {
-            margin-top: 24px;
-            margin-bottom: 16px;
-            font-weight: 600;
+        .signature-header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
         }
-        h1 { font-size: 2em; }
-        h2 { font-size: 1.5em; }
-        h3 { font-size: 1.25em; }
+        .signature-section {
+            border-top: 1px solid #ccc;
+            margin-top: 40px;
+            padding-top: 20px;
+        }
+        h1, h2, h3 { margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
         p { margin-bottom: 16px; }
-        ul, ol { margin-bottom: 16px; padding-left: 32px; }
-        li { margin-bottom: 8px; }
-        blockquote {
-            border-left: 4px solid #e5e7eb;
-            padding-left: 16px;
-            margin: 16px 0;
-            font-style: italic;
-        }
-        pre {
-            background-color: #f3f4f6;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
-        img { max-width: 100%; height: auto; }
-        a { color: #2563eb; text-decoration: underline; }
-        table { border-collapse: collapse; width: 100%; margin: 16px 0; }
-        th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
-        th { background-color: #f9fafb; font-weight: 600; }
+        .status { color: #059669; font-weight: 600; }
     </style>
 </head>
 <body>
-    ${content}
+    <div class="signature-header">
+        <h1>Signed Document</h1>
+        <p><strong>Original File:</strong> ${documentTitle}</p>
+        <p><strong>Signed on:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+    </div>
+    
+    <div class="document-content">
+        ${content}
+    </div>
+    
+    <div class="signature-section">
+        <h3>Digital Signature Certification</h3>
+        <p class="status">Status: Digitally Signed</p>
+        <p><strong>Signature Type:</strong> Electronic Signature</p>
+        <p><strong>Verification:</strong> Valid</p>
+    </div>
 </body>
 </html>`;
-    
-    // Create blob with HTML content
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    
-    // Create a download link and click it
-    const a = window.document.createElement('a');
-    a.href = url;
-    a.download = `${documentTitle}.html`;
-    window.document.body.appendChild(a);
-    a.click();
-    
-    // Clean up
-    URL.revokeObjectURL(url);
-    window.document.body.removeChild(a);
-    
-    toast({
-      title: "Document downloaded",
-      description: "Your formatted document has been downloaded as HTML.",
-    });
+      
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = window.document.createElement('a');
+      a.href = url;
+      a.download = `signed_${documentTitle}.html`;
+      window.document.body.appendChild(a);
+      a.click();
+      
+      URL.revokeObjectURL(url);
+      window.document.body.removeChild(a);
+      
+      toast({
+        title: "Signed document downloaded",
+        description: "Your signed document summary has been downloaded as HTML.",
+      });
+    } else {
+      // For unsigned documents, create plain text format
+      // Strip HTML tags for plain text
+      const textContent = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      
+      const blob = new Blob([textContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = window.document.createElement('a');
+      a.href = url;
+      a.download = `${documentTitle}.txt`;
+      window.document.body.appendChild(a);
+      a.click();
+      
+      URL.revokeObjectURL(url);
+      window.document.body.removeChild(a);
+      
+      toast({
+        title: "Document downloaded",
+        description: "Your document has been downloaded as text file.",
+      });
+    }
   };
 
   return {

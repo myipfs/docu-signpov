@@ -228,7 +228,7 @@ const DocumentEditor = () => {
                   </>
                 )}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => downloadDocument(documentTitle, content)}>
+              <Button variant="outline" size="sm" onClick={() => downloadDocument(documentTitle, content, false)}>
                 <Download className="mr-2 h-4 w-4" />
                 Download
               </Button>

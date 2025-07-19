@@ -50,7 +50,7 @@ export function useDocumentProcessor() {
     setIsLoading(true);
     
     try {
-      // Create a PDF with the signature
+      // Create a PDF with the signature for signed documents
       const pdf = new jsPDF();
       
       // Add document info
