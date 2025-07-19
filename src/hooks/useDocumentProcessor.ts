@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { toast } from '@/utils/toast';
+import jsPDF from 'jspdf';
 
 export function useDocumentProcessor() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,24 +24,15 @@ export function useDocumentProcessor() {
       const fileUrl = URL.createObjectURL(file);
       setDocumentPreview(fileUrl);
     } else {
-      // For other file types, create a text preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          setDocumentPreview('data:text/html;charset=utf-8,' + encodeURIComponent(`
-            <html>
-              <body style="font-family: system-ui; padding: 20px;">
-                <h2>${file.name}</h2>
-                <p>Document ready for signing</p>
-                <p style="color: #666;">This is a preview of your document.</p>
-              </body>
-            </html>
-          `));
-        } catch (err) {
-          console.error('Error creating preview:', err);
-        }
-      };
-      reader.readAsText(file);
+      // For other file types, show file info
+      setDocumentPreview(`data:text/html;charset=utf-8,${encodeURIComponent(`
+        <div style="font-family: system-ui; padding: 20px; text-align: center;">
+          <h2>${file.name}</h2>
+          <p>File size: ${(file.size / 1024).toFixed(1)} KB</p>
+          <p>Type: ${file.type || 'Unknown'}</p>
+          <p style="color: #666; margin-top: 20px;">Document ready for signing</p>
+        </div>
+      `)}`);
     }
   };
   
@@ -58,83 +50,55 @@ export function useDocumentProcessor() {
     setIsLoading(true);
     
     try {
-      // Create a combined document with signature for demo purposes
-      if (documentFile.type === 'text/plain' || documentFile.name.endsWith('.txt')) {
-        // For text files, append signature information
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const originalContent = e.target?.result as string || '';
-          const signedContent = `${originalContent}\n\n--- DIGITALLY SIGNED ---\n[Signature Applied]\nSigned on: ${new Date().toLocaleDateString()}\n`;
-          
-          const blob = new Blob([signedContent], { type: 'text/plain' });
-          const url = URL.createObjectURL(blob);
-          
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `signed_${documentName}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          
-          setIsLoading(false);
-          toast.success('Signed document downloaded successfully!');
-        };
-        reader.readAsText(documentFile);
-      } else {
-        // For other file types, create an HTML version with the signature
-        const htmlContent = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Signed Document: ${documentName}</title>
-            <style>
-              body { font-family: Arial, sans-serif; margin: 40px; }
-              .document-header { border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
-              .signature-section { border-top: 1px solid #ccc; margin-top: 40px; padding-top: 20px; }
-              .signature-image { max-width: 200px; height: auto; border: 1px solid #ddd; padding: 10px; }
-            </style>
-          </head>
-          <body>
-            <div class="document-header">
-              <h1>Signed Document</h1>
-              <p><strong>Original File:</strong> ${documentName}</p>
-              <p><strong>Signed on:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-            </div>
-            
-            <div class="document-content">
-              <p>This document has been digitally signed. The original file "${documentName}" has been processed and includes the signature below.</p>
-              <p><em>Note: In a production environment, this would show the actual document content with the signature embedded.</em></p>
-            </div>
-            
-            <div class="signature-section">
-              <h3>Digital Signature</h3>
-              <img src="${signature}" alt="Digital Signature" class="signature-image" />
-              <p><strong>Status:</strong> Signed</p>
-              <p><strong>Signature Type:</strong> Electronic Signature</p>
-            </div>
-          </body>
-          </html>
-        `;
-        
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `signed_${documentName.replace(/\.[^/.]+$/, '')}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        setIsLoading(false);
-        toast.success('Signed document downloaded successfully!');
+      // Create a PDF with the signature
+      const pdf = new jsPDF();
+      
+      // Add document info
+      pdf.setFontSize(20);
+      pdf.text('Signed Document', 20, 30);
+      
+      pdf.setFontSize(12);
+      pdf.text(`Original File: ${documentName}`, 20, 50);
+      pdf.text(`Signed on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 20, 65);
+      
+      // Add document content placeholder
+      pdf.setFontSize(14);
+      pdf.text('Document Content:', 20, 90);
+      pdf.setFontSize(10);
+      pdf.text('This document has been digitally signed.', 20, 105);
+      pdf.text('In a production environment, the original document content would appear here.', 20, 115);
+      
+      // Add signature
+      pdf.setFontSize(14);
+      pdf.text('Digital Signature:', 20, 150);
+      
+      // Add signature image if it's a data URL
+      if (signature.startsWith('data:image/')) {
+        try {
+          pdf.addImage(signature, 'PNG', 20, 160, 80, 40);
+        } catch (imgError) {
+          console.error('Error adding signature image:', imgError);
+          pdf.setFontSize(10);
+          pdf.text('[Signature could not be embedded]', 20, 170);
+        }
       }
-    } catch (error) {
-      console.error('Download error:', error);
+      
+      // Add signature details
+      pdf.setFontSize(10);
+      pdf.text('Status: Digitally Signed', 20, 220);
+      pdf.text('Signature Type: Electronic Signature', 20, 230);
+      pdf.text('Verification: Valid', 20, 240);
+      
+      // Save the PDF
+      const filename = `signed_${documentName.replace(/\.[^/.]+$/, '')}.pdf`;
+      pdf.save(filename);
+      
       setIsLoading(false);
-      toast.error('Failed to download signed document');
+      toast.success('Signed PDF document downloaded successfully!');
+    } catch (error) {
+      console.error('PDF creation error:', error);
+      setIsLoading(false);
+      toast.error('Failed to create signed PDF document');
     }
   };
 

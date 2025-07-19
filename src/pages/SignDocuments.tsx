@@ -12,8 +12,8 @@ const SignDocuments = () => {
   const { session } = useSession();
 
   const handleUploadDocument = () => {
-    // Redirect to sign document page for uploading and signing documents
-    navigate('/sign-document');
+    // Redirect to editor for uploading and signing documents
+    navigate('/editor');
   };
   
   const handleQuickSign = () => {
