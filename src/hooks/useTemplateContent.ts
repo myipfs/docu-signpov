@@ -12,7 +12,7 @@ export const useTemplateContent = (templateId: string | undefined, templates: Te
   const [documentTitle, setDocumentTitle] = useState('');
   const [content, setContent] = useState('');
   const [originalContent, setOriginalContent] = useState('');
-  const [activeTab, setActiveTab] = useState('edit');
+  const [activeTab, setActiveTab] = useState('preview'); // Start with preview to show template content
 
   useEffect(() => {
     if (templateId) {

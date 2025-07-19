@@ -268,7 +268,14 @@ const DocumentEditor = () => {
                   
                   <TabsContent value="preview" className="p-6 m-0">
                     {content ? (
-                      <div className="prose max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: content }} />
+                      <div 
+                        className="prose prose-sm max-w-none dark:prose-invert"
+                        style={{
+                          lineHeight: '1.6',
+                          fontFamily: 'system-ui, -apple-system, sans-serif'
+                        }}
+                        dangerouslySetInnerHTML={{ __html: content }} 
+                      />
                     ) : (
                       <div className="text-center text-muted-foreground py-20">
                         <p>No content to preview yet.</p>

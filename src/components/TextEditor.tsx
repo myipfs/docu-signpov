@@ -33,13 +33,15 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, setContent }) => {
     if (editorRef.current) {
       editorRef.current.contentEditable = "true";
       editorRef.current.focus();
-      
-      // Set initial content if available
-      if (content) {
-        editorRef.current.innerHTML = content;
-      }
     }
   }, []);
+
+  // Update editor content when content prop changes
+  useEffect(() => {
+    if (editorRef.current && content !== editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = content;
+    }
+  }, [content]);
 
   // Update content state when editor content changes
   const handleInput = () => {
@@ -157,7 +159,11 @@ const TextEditor: React.FC<TextEditorProps> = ({ content, setContent }) => {
       
       <div
         ref={editorRef}
-        className="p-6 min-h-[calc(100vh-400px)] focus:outline-none prose prose-sm max-w-none dark:prose-invert"
+        className="p-6 min-h-[calc(100vh-400px)] focus:outline-none prose prose-sm max-w-none dark:prose-invert [&>*]:whitespace-pre-wrap"
+        style={{
+          lineHeight: '1.6',
+          fontFamily: 'system-ui, -apple-system, sans-serif'
+        }}
         onInput={handleInput}
       />
     </div>

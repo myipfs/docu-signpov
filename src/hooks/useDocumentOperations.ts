@@ -158,14 +158,65 @@ export const useDocumentOperations = () => {
   };
 
   const downloadDocument = (documentTitle: string, content: string) => {
-    // Create a blob with the current content (not the original content)
-    const blob = new Blob([content], { type: 'text/plain' });
+    // Create HTML document with proper formatting
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${documentTitle}</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        h1 { font-size: 2em; }
+        h2 { font-size: 1.5em; }
+        h3 { font-size: 1.25em; }
+        p { margin-bottom: 16px; }
+        ul, ol { margin-bottom: 16px; padding-left: 32px; }
+        li { margin-bottom: 8px; }
+        blockquote {
+            border-left: 4px solid #e5e7eb;
+            padding-left: 16px;
+            margin: 16px 0;
+            font-style: italic;
+        }
+        pre {
+            background-color: #f3f4f6;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        img { max-width: 100%; height: auto; }
+        a { color: #2563eb; text-decoration: underline; }
+        table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+        th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+        th { background-color: #f9fafb; font-weight: 600; }
+    </style>
+</head>
+<body>
+    ${content}
+</body>
+</html>`;
+    
+    // Create blob with HTML content
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     
     // Create a download link and click it
     const a = window.document.createElement('a');
     a.href = url;
-    a.download = `${documentTitle}.txt`;
+    a.download = `${documentTitle}.html`;
     window.document.body.appendChild(a);
     a.click();
     
@@ -175,7 +226,7 @@ export const useDocumentOperations = () => {
     
     toast({
       title: "Document downloaded",
-      description: "Your document has been downloaded successfully.",
+      description: "Your formatted document has been downloaded as HTML.",
     });
   };
 
