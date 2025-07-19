@@ -84,8 +84,8 @@ export default function AdminDashboard() {
       
       if (error) throw error;
       
-      if (data && typeof data === 'object') {
-        setAdminData(data as AdminData);
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        setAdminData(data as unknown as AdminData);
       }
     } catch (error: any) {
       console.error('Failed to fetch admin data:', error);
