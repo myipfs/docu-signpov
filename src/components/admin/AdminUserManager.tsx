@@ -120,6 +120,27 @@ export function AdminUserManager({ adminRole }: AdminUserManagerProps) {
     }
   };
 
+  const changePlanType = async (userId: string, planType: 'free' | 'premium') => {
+    try {
+      const isPremium = planType === 'premium';
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          is_premium: isPremium,
+          storage_limit: isPremium ? 1073741824 : 524288000 // 1GB for premium, 500MB for free
+        })
+        .eq('id', userId);
+      
+      if (error) throw error;
+      
+      toast.success(`User plan changed to ${planType}`);
+      fetchUsers();
+    } catch (error: any) {
+      console.error('Failed to change plan type:', error);
+      toast.error('Failed to change plan type');
+    }
+  };
+
   const grantAdminAccess = async (userId: string, email: string, role: 'admin' | 'moderator' = 'admin') => {
     if (adminRole !== 'super_admin') {
       toast.error('Only super admins can grant admin access');
@@ -266,14 +287,16 @@ export function AdminUserManager({ adminRole }: AdminUserManagerProps) {
                         </p>
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => togglePremiumStatus(user.id, user.is_premium)}
-                          >
-                            {user.is_premium ? 'Downgrade' : 'Upgrade'}
-                          </Button>
+                        <div className="flex gap-2 flex-wrap">
+                          <Select onValueChange={(value) => changePlanType(user.id, value as 'free' | 'premium')}>
+                            <SelectTrigger className="w-24 h-8">
+                              <SelectValue placeholder={user.is_premium ? 'Premium' : 'Free'} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="free">Free</SelectItem>
+                              <SelectItem value="premium">Premium</SelectItem>
+                            </SelectContent>
+                          </Select>
                           {adminRole === 'super_admin' && !user.admin_role && (
                             <Button
                               size="sm"

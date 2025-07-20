@@ -29,6 +29,7 @@ import SignDocuments from './pages/SignDocuments';
 import AITemplates from './pages/AITemplates';
 import AIWorkflow from './pages/AIWorkflow';
 import AdminDashboard from './pages/AdminDashboard';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => {
               <Route path="/ai-templates" element={<AITemplates />} />
               <Route path="/ai-workflow/:workflowId" element={<AIWorkflow />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>

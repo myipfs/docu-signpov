@@ -51,9 +51,14 @@ const Header = () => {
             <Link to="/ai-templates">🤖 AI Pro</Link>
           </Button>
           {isAuthenticated && (
-            <Button variant="ghost" asChild>
-              <Link to="/my-documents">My Documents</Link>
-            </Button>
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/my-documents">My Documents</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/profile">Profile</Link>
+              </Button>
+            </>
           )}
           <Button variant="ghost" asChild>
             <Link to="/sign-documents">Sign Documents</Link>

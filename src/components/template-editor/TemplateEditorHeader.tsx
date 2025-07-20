@@ -72,11 +72,11 @@ const TemplateEditorHeader: React.FC<TemplateEditorHeaderProps> = ({
       </Button>
       
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
           <Input
             value={documentTitle}
             onChange={(e) => setDocumentTitle(e.target.value)}
-            className="text-xl font-semibold border-none focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
+            className="text-xl font-semibold border-none focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto min-w-0 flex-1"
             placeholder="Document Title"
           />
           {documentId && (
