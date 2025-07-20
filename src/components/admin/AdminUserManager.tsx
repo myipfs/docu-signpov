@@ -37,99 +37,35 @@ export function AdminUserManager({ adminRole }: AdminUserManagerProps) {
     try {
       setLoading(true);
       
-      // Fetch users with profile data
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*');
+      // Use the new RPC function to fetch users
+      const { data, error } = await supabase.rpc('get_all_users_admin');
       
-      if (profilesError) throw profilesError;
-
-      // Fetch admin users
-      const { data: adminUsers, error: adminError } = await supabase
-        .from('admin_users')
-        .select('user_id, role, is_active');
-
-      if (adminError) throw adminError;
-
-      // Get auth users (need to fetch from admin endpoint or use RPC)
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-      if (authError) throw authError;
-
-      // Combine data
-      const combinedUsers = authData.users.map(authUser => {
-        const profile = profiles?.find(p => p.id === authUser.id);
-        const adminRole = adminUsers?.find(a => a.user_id === authUser.id && a.is_active);
-        
-        return {
-          id: authUser.id,
-          email: authUser.email || 'No email',
-          created_at: authUser.created_at,
-          is_premium: profile?.is_premium || false,
-          storage_used: profile?.storage_used || 0,
-          storage_limit: profile?.storage_limit || 0,
-          admin_role: adminRole?.role
-        };
-      });
-
-      setUsers(combinedUsers);
+      if (error) throw error;
+      
+      if (data && Array.isArray(data)) {
+        setUsers(data as unknown as User[]);
+      } else {
+        setUsers([]);
+      }
     } catch (error: any) {
       console.error('Failed to fetch users:', error);
       toast.error('Failed to load users');
-      
-      // Fallback: fetch from profiles table only
-      try {
-        const { data: profiles, error } = await supabase
-          .from('profiles')
-          .select('*');
-        
-        if (!error && profiles) {
-          setUsers(profiles.map(profile => ({
-            id: profile.id,
-            email: 'Email not available',
-            created_at: profile.created_at,
-            is_premium: profile.is_premium || false,
-            storage_used: profile.storage_used || 0,
-            storage_limit: profile.storage_limit || 0
-          })));
-        }
-      } catch (fallbackError) {
-        console.error('Fallback fetch failed:', fallbackError);
-      }
+      setUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const togglePremiumStatus = async (userId: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          is_premium: !currentStatus,
-          storage_limit: !currentStatus ? 1073741824 : 524288000 // 1GB for premium, 500MB for free
-        })
-        .eq('id', userId);
-      
-      if (error) throw error;
-      
-      toast.success(`User ${!currentStatus ? 'upgraded to' : 'downgraded from'} premium`);
-      fetchUsers();
-    } catch (error: any) {
-      console.error('Failed to update premium status:', error);
-      toast.error('Failed to update user status');
-    }
-  };
 
   const changePlanType = async (userId: string, planType: 'free' | 'premium') => {
     try {
       const isPremium = planType === 'premium';
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          is_premium: isPremium,
-          storage_limit: isPremium ? 1073741824 : 524288000 // 1GB for premium, 500MB for free
-        })
-        .eq('id', userId);
+      
+      // Use the new RPC function to update premium status
+      const { data, error } = await supabase.rpc('update_user_premium_status', {
+        target_user_id: userId,
+        new_premium_status: isPremium
+      });
       
       if (error) throw error;
       

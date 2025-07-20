@@ -210,6 +210,10 @@ export type Database = {
         Args: { user_id?: string }
         Returns: Database["public"]["Enums"]["admin_role"]
       }
+      get_all_users_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_and_track_storage: {
         Args: { user_id: string }
         Returns: {
@@ -235,6 +239,10 @@ export type Database = {
       }
       is_admin: {
         Args: { user_id?: string }
+        Returns: boolean
+      }
+      update_user_premium_status: {
+        Args: { target_user_id: string; new_premium_status: boolean }
         Returns: boolean
       }
     }
