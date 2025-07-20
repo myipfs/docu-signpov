@@ -35,7 +35,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
               <div className="mb-8">
-                {isPremium ? (
+                {isPremium || session?.user?.email === 'signpov@gmail.com' ? (
                   <TempEmailManager />
                 ) : (
                   <Card>

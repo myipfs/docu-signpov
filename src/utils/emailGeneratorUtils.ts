@@ -5,7 +5,7 @@
  */
 export const generateTempEmail = () => {
   const random = Math.random().toString(36).substring(2, 10);
-  return `temp-${random}@signdocs.temp`;
+  return `temp-${random}@signpov.com`;
 };
 
 /**

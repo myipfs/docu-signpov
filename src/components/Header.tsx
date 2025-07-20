@@ -58,6 +58,11 @@ const Header = () => {
               <Button variant="ghost" asChild>
                 <Link to="/profile">Profile</Link>
               </Button>
+              {session?.user?.email === 'signpov@gmail.com' && (
+                <Button variant="ghost" asChild>
+                  <Link to="/admin">Admin</Link>
+                </Button>
+              )}
             </>
           )}
           <Button variant="ghost" asChild>
