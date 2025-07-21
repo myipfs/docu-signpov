@@ -71,12 +71,12 @@ const TemplateEditorHeader: React.FC<TemplateEditorHeaderProps> = ({
         Back to Templates
       </Button>
       
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
+      <div className="flex justify-between items-start gap-4 mb-6">
+        <div className="flex items-center gap-4 flex-1 min-w-0 max-w-2xl">
           <Input
             value={documentTitle}
             onChange={(e) => setDocumentTitle(e.target.value)}
-            className="text-xl font-semibold border-none focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto min-w-0 flex-1"
+            className="text-xl font-semibold border-none focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto w-full"
             placeholder="Document Title"
           />
           {documentId && (
@@ -86,7 +86,7 @@ const TemplateEditorHeader: React.FC<TemplateEditorHeaderProps> = ({
           )}
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-shrink-0">
           {!isAuthenticated ? (
             <Button variant="outline" size="sm" onClick={handleLoginRedirect}>
               <LogIn className="mr-2 h-4 w-4" />

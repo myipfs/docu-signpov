@@ -228,16 +228,64 @@ export const useDocumentOperations = () => {
         description: "Your signed document summary has been downloaded as HTML.",
       });
     } else {
-      // For unsigned documents, create plain text format
-      // Strip HTML tags for plain text
-      const textContent = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      // For unsigned documents, create rich HTML format that preserves formatting
+      const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${documentTitle}</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 { margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
+        p { margin-bottom: 16px; }
+        ul, ol { margin-bottom: 16px; padding-left: 24px; }
+        blockquote { 
+            border-left: 4px solid #e5e7eb; 
+            padding-left: 16px; 
+            margin: 16px 0; 
+            font-style: italic; 
+        }
+        code { 
+            background-color: #f3f4f6; 
+            padding: 2px 4px; 
+            border-radius: 4px; 
+            font-family: 'Courier New', monospace; 
+        }
+        a { color: #2563eb; text-decoration: underline; }
+        img { max-width: 100%; height: auto; }
+        .document-header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="document-header">
+        <h1>${documentTitle}</h1>
+        <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+    </div>
+    
+    <div class="document-content">
+        ${content}
+    </div>
+</body>
+</html>`;
       
-      const blob = new Blob([textContent], { type: 'text/plain' });
+      const blob = new Blob([htmlContent], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       
       const a = window.document.createElement('a');
       a.href = url;
-      a.download = `${documentTitle}.txt`;
+      a.download = `${documentTitle}.html`;
       window.document.body.appendChild(a);
       a.click();
       
@@ -246,7 +294,7 @@ export const useDocumentOperations = () => {
       
       toast({
         title: "Document downloaded",
-        description: "Your document has been downloaded as text file.",
+        description: "Your document has been downloaded with all formatting preserved.",
       });
     }
   };
