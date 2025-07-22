@@ -42,11 +42,12 @@ export function DocumentPreview({ documentName, documentPreview, documentFile }:
                 title="Document preview"
                 className="w-full h-[60vh] border-none"
               />
-            ) : documentPreview.startsWith('data:application/pdf') || (documentFile?.type === 'application/pdf') ? (
+            ) : documentFile?.type === 'application/pdf' ? (
               <iframe 
-                src={documentPreview + '#toolbar=0'}
+                src={documentPreview}
                 title="PDF preview"
                 className="w-full h-[60vh] border-none"
+                style={{ border: 'none' }}
               />
             ) : (
               <div className="text-center p-8 max-w-md">
