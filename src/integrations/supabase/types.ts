@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
@@ -80,6 +80,48 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_read: boolean
+          is_site_wide: boolean
+          message: string
+          metadata: Json | null
+          sender_id: string | null
+          target_user_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          is_site_wide?: boolean
+          message: string
+          metadata?: Json | null
+          sender_id?: string | null
+          target_user_id?: string | null
+          title: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          is_site_wide?: boolean
+          message?: string
+          metadata?: Json | null
+          sender_id?: string | null
+          target_user_id?: string | null
+          title?: string
+          type?: string
         }
         Relationships: []
       }
@@ -202,7 +244,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_delete_user_documents: {
+        Args: { p_user_id: string; p_document_ids?: string[] }
+        Returns: Json
+      }
       get_admin_analytics: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_admin_document_analytics: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
@@ -240,6 +290,17 @@ export type Database = {
       is_admin: {
         Args: { user_id?: string }
         Returns: boolean
+      }
+      send_notification: {
+        Args: {
+          p_title: string
+          p_message: string
+          p_type?: string
+          p_is_site_wide?: boolean
+          p_target_user_id?: string
+          p_expires_at?: string
+        }
+        Returns: string
       }
       update_user_premium_status: {
         Args: { target_user_id: string; new_premium_status: boolean }
