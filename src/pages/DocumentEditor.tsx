@@ -127,7 +127,20 @@ const DocumentEditor = () => {
       return;
     }
 
-    if (!isPremium) {
+    // Refresh storage data to get latest premium status
+    const { refreshStorageData } = useStorageLimit();
+    refreshStorageData();
+    
+    // Check premium status from the database directly to avoid cache issues
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('is_premium')
+      .eq('id', session.user.id)
+      .single();
+
+    const isUserPremium = profileData?.is_premium || false;
+    
+    if (!isUserPremium) {
       toast({
         title: 'Premium feature',
         description: 'Sending signing requests requires a paid subscription. Please upgrade your plan.',
@@ -160,12 +173,43 @@ const DocumentEditor = () => {
 
     setSignatures(newSignatures);
 
-    // In a real implementation, this would send actual emails
-    // For now, we'll show a success message
-    toast({
-      title: 'Signing requests sent',
-      description: `Signing requests have been sent to ${recipients.length} recipient${recipients.length === 1 ? '' : 's'} using their real email addresses.`,
-    });
+    try {
+      // Send signing requests to each recipient
+      for (const recipient of recipients) {
+        const { data, error } = await supabase.functions.invoke('send-contact-email', {
+          body: {
+            to: recipient.email,
+            from: session.user.email,
+            subject: `Signature Request: ${documentTitle}`,
+            text: `Hello ${recipient.name},\n\nYou have received a document signing request for "${documentTitle}" from ${session.user.email}.\n\nPlease click the link below to review and sign the document:\n${window.location.origin}/sign-document/${documentId || id}\n\nThank you,\nSignPOV Team`,
+            html: `
+              <h2>Document Signature Request</h2>
+              <p>Hello ${recipient.name},</p>
+              <p>You have received a document signing request for <strong>"${documentTitle}"</strong> from ${session.user.email}.</p>
+              <p><a href="${window.location.origin}/sign-document/${documentId || id}" style="background-color: #3b82f6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Review and Sign Document</a></p>
+              <p>Thank you,<br>SignPOV Team</p>
+            `
+          }
+        });
+
+        if (error) {
+          console.error(`Error sending to ${recipient.email}:`, error);
+          throw new Error(`Failed to send to ${recipient.email}: ${error.message}`);
+        }
+      }
+
+      toast({
+        title: 'Signing requests sent successfully',
+        description: `Signing requests have been sent to ${recipients.length} recipient${recipients.length === 1 ? '' : 's'}.`,
+      });
+    } catch (error: any) {
+      console.error('Error sending signing requests:', error);
+      toast({
+        title: 'Failed to send signing requests',
+        description: error.message || 'Please try again later.',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleSignDocument = () => {

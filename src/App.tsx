@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 import DocumentEditor from "./pages/DocumentEditor";
 import TemplatesPage from "./pages/TemplatesPage";
 import TemplateEditor from "./pages/TemplateEditor";
-import EmailSettings from "./pages/EmailSettings";
+
 import QuickSign from "./pages/QuickSign";
 import { SessionProvider } from "./context/SessionContext";
 import Encryption from "./pages/Encryption";
@@ -30,6 +30,7 @@ import AITemplates from './pages/AITemplates';
 import AIWorkflow from './pages/AIWorkflow';
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
+import ResetPassword from './pages/ResetPassword';
 
 const queryClient = new QueryClient();
 
@@ -55,7 +56,6 @@ const App = () => {
               <Route path="/document-editor/:id" element={<DocumentEditor />} />
               <Route path="/templates" element={<TemplatesPage />} />
               <Route path="/templates/edit/:id" element={<TemplateEditor />} />
-              <Route path="/email-settings" element={<EmailSettings />} />
               <Route path="/encryption" element={<Encryption />} />
               <Route path="/features" element={<FeaturesPage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
@@ -69,6 +69,7 @@ const App = () => {
               <Route path="/ai-workflow/:workflowId" element={<AIWorkflow />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
