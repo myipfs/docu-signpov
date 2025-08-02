@@ -35,6 +35,7 @@ import ResetPassword from './pages/ResetPassword';
 const queryClient = new QueryClient();
 
 const App = () => {
+  // EmailSettings component has been removed - this is a clean app
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
