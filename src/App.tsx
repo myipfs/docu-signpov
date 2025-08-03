@@ -31,6 +31,27 @@ import AIWorkflow from './pages/AIWorkflow';
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
 import ResetPassword from './pages/ResetPassword';
+import { useEffect } from 'react';
+import { useSession } from './context/SessionContext';
+import { useNavigate } from 'react-router-dom';
+
+// Component to handle admin redirect
+function AdminRedirectHandler() {
+  const { session } = useSession();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if user is an admin and redirect appropriately
+    if (session?.user?.email === 'support@signpov.com' || session?.user?.email === 'signpov@gmail.com') {
+      // Only redirect if they're on the homepage
+      if (window.location.pathname === '/') {
+        navigate('/admin');
+      }
+    }
+  }, [session, navigate]);
+  
+  return null;
+}
 
 const queryClient = new QueryClient();
 
@@ -43,6 +64,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <Router>
+            <AdminRedirectHandler />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />

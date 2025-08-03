@@ -12,6 +12,9 @@ const Header = () => {
   const navigate = useNavigate();
   const isAuthenticated = !!session?.user;
   const { isPremium } = useStorageLimit();
+  
+  // Check if user is admin (support@signpov.com or signpov@gmail.com)
+  const isAdmin = session?.user?.email === 'support@signpov.com' || session?.user?.email === 'signpov@gmail.com';
 
   const handleAuthAction = async () => {
     if (isAuthenticated) {
@@ -58,7 +61,7 @@ const Header = () => {
               <Button variant="ghost" asChild>
                 <Link to="/profile">Profile</Link>
               </Button>
-              {session?.user?.email === 'signpov@gmail.com' && (
+              {isAdmin && (
                 <Button variant="ghost" asChild>
                   <Link to="/admin">Admin</Link>
                 </Button>

@@ -107,7 +107,7 @@ const PricingPage = () => {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Temporary email feature</span>
+                  <span>Advanced analytics</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
@@ -202,10 +202,10 @@ const PricingPage = () => {
               </div>
               
               <div className="glass-card p-6 rounded-xl">
-                <h3 className="text-lg font-medium mb-3">Is the temporary email feature available on free plans?</h3>
+                <h3 className="text-lg font-medium mb-3">What premium features are included?</h3>
                 <p className="text-foreground/70">
-                  The temporary email forwarding feature is only available on our Premium plan. This
-                  feature helps protect your privacy when sending and receiving signed documents.
+                  Premium plans include unlimited storage, advanced analytics, priority support, and 
+                  access to AI-powered document generation tools.
                 </p>
               </div>
               

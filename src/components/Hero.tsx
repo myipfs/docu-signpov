@@ -46,14 +46,14 @@ export default function Hero() {
             Sign Documents Securely and <span className="text-gradient whitespace-nowrap">Forever Free</span>
           </h1>
 
-          {/* Updated description with optional temporary email */}
+          {/* Updated description */}
           <p 
             className={cn(
               "text-lg text-foreground/80 max-w-2xl mb-8 text-balance opacity-0 transform translate-y-4 transition-all duration-700 delay-200 ease-out",
               isVisible && "opacity-100 translate-y-0"
             )}
           >
-            Create, upload, and sign documents with our no-cost platform. Use your regular email or opt for temporary forwarding addresses for enhanced privacy when sharing and receiving signed documents.
+            Create, upload, and sign documents with our no-cost platform. Professional document signing made simple and secure.
           </p>
 
           {/* CTA buttons with animation delay */}
@@ -96,7 +96,7 @@ export default function Hero() {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Mail className="w-4 h-4" />
-                    <span>Choose regular or temp email</span>
+                    <span>Secure email notifications</span>
                   </div>
                 </div>
 
@@ -136,7 +136,7 @@ export default function Hero() {
                       <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                         <Mail className="w-3 h-3 text-primary" />
                       </div>
-                      <span>Optional email privacy protection</span>
+                      <span>Secure email notifications</span>
                     </div>
                   </div>
                 </div>

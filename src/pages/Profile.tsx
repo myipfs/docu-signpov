@@ -176,7 +176,7 @@ const Profile = () => {
                         <p className="text-sm text-muted-foreground">✓ Unlimited document storage</p>
                         <p className="text-sm text-muted-foreground">✓ Advanced templates</p>
                         <p className="text-sm text-muted-foreground">✓ Priority support</p>
-                        <p className="text-sm text-muted-foreground">✓ Temporary email management</p>
+                        <p className="text-sm text-muted-foreground">✓ Advanced analytics</p>
                       </div>
                     ) : (
                       <div className="space-y-2">
