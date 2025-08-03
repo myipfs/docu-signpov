@@ -12,20 +12,18 @@ interface StorageData {
   isLimitReached: boolean;
 }
 
-// Define a Zod schema for the response data
+// Define a Zod schema for the response data based on get_user_storage_data function
 const StorageDataResponseSchema = z.object({
-  total_storage: z.number(),
-  used_storage: z.number(),
-  document_count: z.number(),
-  signatures_count: z.number(),
-  storage_buckets: z.array(z.string()).optional()
+  storage_used: z.number().nullable(),
+  storage_limit: z.number().nullable(),
+  is_premium: z.boolean().nullable()
 });
 
 // Type based on the schema
-type UserStorageDataV2 = z.infer<typeof StorageDataResponseSchema>;
+type UserStorageData = z.infer<typeof StorageDataResponseSchema>;
 
 // Type guard for runtime checking
-function isValidStorageData(data: unknown): data is UserStorageDataV2 {
+function isValidStorageData(data: unknown): data is UserStorageData {
   try {
     StorageDataResponseSchema.parse(data);
     return true;
@@ -58,8 +56,7 @@ export const useStorageLimit = () => {
       
       // Call the correct RPC function without parameters since it uses auth.uid() internally
       const { data, error: rpcError } = await supabase
-        .rpc('get_user_storage_data_v2')
-        .single();
+        .rpc('get_user_storage_data');
       
       if (rpcError) throw rpcError;
       
@@ -67,22 +64,16 @@ export const useStorageLimit = () => {
         // Validate data with Zod
         const validatedData = StorageDataResponseSchema.parse(data);
         
-        const used = validatedData.used_storage || 0;
-        const limit = validatedData.total_storage || 0;
+        const used = validatedData.storage_used || 0;
+        const limit = validatedData.storage_limit || 0;
         const percentUsed = limit > 0 ? (used / limit) * 100 : 0;
-        
-        // Check if user is premium by querying the profiles table
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('is_premium')
-          .eq('id', session.user.id)
-          .single();
+        const isPremium = validatedData.is_premium || false;
         
         setStorageData({
           used,
           limit,
           percentUsed,
-          isPremium: profileData?.is_premium || false,
+          isPremium,
           isLimitReached: used >= limit,
         });
       }
