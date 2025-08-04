@@ -306,6 +306,10 @@ export type Database = {
         Args: { target_user_id: string; new_premium_status: boolean }
         Returns: boolean
       }
+      update_user_storage: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       admin_role: "super_admin" | "admin" | "moderator"
