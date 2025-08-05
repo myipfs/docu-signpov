@@ -134,7 +134,7 @@ export default function AdminDashboard() {
               <Badge variant={adminRole === 'super_admin' ? 'default' : 'secondary'}>
                 {adminRole?.replace('_', ' ').toUpperCase()}
               </Badge>
-              <Button variant="outline" onClick={() => navigate('/')}>
+              <Button variant="outline" onClick={() => navigate('/dashboard')}>
                 Back to App
               </Button>
             </div>
