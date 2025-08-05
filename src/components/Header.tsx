@@ -53,6 +53,9 @@ const Header = () => {
           <Button variant="ghost" asChild>
             <Link to="/ai-templates">🤖 AI Pro</Link>
           </Button>
+          <Button variant="ghost" asChild>
+            <Link to="/bank-converter">📊 Bank Converter</Link>
+          </Button>
           {isAuthenticated && (
             <>
               <Button variant="ghost" asChild>

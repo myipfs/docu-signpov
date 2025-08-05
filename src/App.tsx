@@ -30,6 +30,7 @@ import AITemplates from './pages/AITemplates';
 import AIWorkflow from './pages/AIWorkflow';
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
+import BankStatementConverter from './pages/BankStatementConverter';
 import ResetPassword from './pages/ResetPassword';
 import { useEffect } from 'react';
 import { useSession } from './context/SessionContext';
@@ -93,6 +94,7 @@ const App = () => {
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/bank-converter" element={<BankStatementConverter />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
