@@ -393,6 +393,69 @@ export const templates: Template[] = [
     category: 'form',
     popular: false,
     icon: <Briefcase size={20} />
+  },
+  {
+    id: 'loan-agreement',
+    title: 'Loan Agreement',
+    description: 'Personal or business loan contract with repayment terms and security provisions.',
+    details: 'This loan agreement includes: (1) Borrower and lender identification (2) Principal amount and interest rate structure (3) Repayment schedule and payment methods (4) Security and collateral provisions (5) Default and acceleration clauses (6) Late payment penalties and fees (7) Prepayment rights and restrictions (8) Representations and warranties (9) Events of default definition (10) Enforcement and collection procedures (11) Governing law and jurisdiction (12) Insurance and property protection requirements.',
+    category: 'legal',
+    popular: true,
+    icon: <Receipt size={20} />
+  },
+  {
+    id: 'construction-contract',
+    title: 'Construction Contract',
+    description: 'Comprehensive construction agreement with specifications, timeline, and payment schedule.',
+    details: 'This construction contract covers: (1) Project description and specifications (2) Materials and workmanship standards (3) Construction timeline and milestones (4) Payment schedule tied to completion stages (5) Change order procedures and pricing (6) Permit and inspection requirements (7) Insurance and bonding provisions (8) Warranty and defect correction terms (9) Safety and compliance standards (10) Completion and acceptance procedures (11) Dispute resolution mechanisms (12) Lien waiver provisions.',
+    category: 'contract',
+    popular: true,
+    icon: <Building size={20} />
+  },
+  {
+    id: 'social-media-policy',
+    title: 'Social Media Policy',
+    description: 'Company policy for employee social media use and brand representation guidelines.',
+    details: 'This social media policy includes: (1) Purpose and scope of the policy (2) Personal vs. professional social media use (3) Brand representation guidelines (4) Confidentiality and trade secret protection (5) Prohibited content and activities (6) Personal account disclaimers (7) Company account management procedures (8) Crisis communication protocols (9) Monitoring and enforcement procedures (10) Training and awareness requirements (11) Violation consequences and disciplinary actions (12) Policy updates and review schedule.',
+    category: 'legal',
+    popular: false,
+    icon: <Users size={20} />
+  },
+  {
+    id: 'data-processing-agreement',
+    title: 'Data Processing Agreement',
+    description: 'GDPR-compliant agreement for third-party data processing with privacy safeguards.',
+    details: 'This data processing agreement covers: (1) Data controller and processor identification (2) Processing purpose and legal basis (3) Categories of personal data and data subjects (4) Processing instructions and restrictions (5) Technical and organizational security measures (6) Sub-processor authorization and oversight (7) Data subject rights facilitation (8) Data breach notification procedures (9) Cross-border transfer safeguards (10) Audit and inspection rights (11) Contract termination and data deletion (12) Liability and indemnification provisions.',
+    category: 'legal',
+    popular: true,
+    icon: <Shield size={20} />
+  },
+  {
+    id: 'photography-release-form',
+    title: 'Photography Release Form',
+    description: 'Model release form for commercial use of photographs and images.',
+    details: 'This photography release form includes: (1) Model and photographer identification (2) Scope of permitted image use (3) Compensation and consideration terms (4) Commercial vs. editorial use rights (5) Duration of usage rights (6) Territory and media restrictions (7) Credit and attribution requirements (8) Moral rights and personality rights waiver (9) Minor consent and guardian approval (10) Revocation and termination procedures (11) Indemnification and liability provisions (12) Governing law and dispute resolution.',
+    category: 'form',
+    popular: false,
+    icon: <FileText size={20} />
+  },
+  {
+    id: 'business-plan-template',
+    title: 'Business Plan Template',
+    description: 'Comprehensive business plan framework for startups and established businesses.',
+    details: 'This business plan template covers: (1) Executive summary and company overview (2) Market analysis and competitive landscape (3) Products and services description (4) Marketing and sales strategy (5) Operational plan and management structure (6) Financial projections and funding requirements (7) Risk analysis and mitigation strategies (8) Implementation timeline and milestones (9) Exit strategy considerations (10) Appendices with supporting documentation (11) SWOT analysis framework (12) Key performance indicators and metrics.',
+    category: 'form',
+    popular: true,
+    icon: <Briefcase size={20} />
+  },
+  {
+    id: 'website-terms-conditions',
+    title: 'Website Terms and Conditions',
+    description: 'Legal terms governing website use, user conduct, and service provisions.',
+    details: 'These website terms include: (1) Acceptance and modification of terms (2) User eligibility and account requirements (3) Permitted and prohibited uses (4) Intellectual property rights and licensing (5) User-generated content policies (6) Privacy policy integration (7) Service availability and modifications (8) Payment terms and refund policies (9) Limitation of liability and disclaimers (10) Indemnification provisions (11) Termination and suspension procedures (12) Governing law and dispute resolution.',
+    category: 'legal',
+    popular: true,
+    icon: <FileText size={20} />
   }
 ];
 
