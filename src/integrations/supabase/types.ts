@@ -128,24 +128,33 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          dormant_reason: string | null
           id: string
+          is_dormant: boolean | null
           is_premium: boolean | null
+          last_activity_at: string | null
           storage_limit: number
           storage_used: number
           updated_at: string
         }
         Insert: {
           created_at?: string
+          dormant_reason?: string | null
           id: string
+          is_dormant?: boolean | null
           is_premium?: boolean | null
+          last_activity_at?: string | null
           storage_limit?: number
           storage_used?: number
           updated_at?: string
         }
         Update: {
           created_at?: string
+          dormant_reason?: string | null
           id?: string
+          is_dormant?: boolean | null
           is_premium?: boolean | null
+          last_activity_at?: string | null
           storage_limit?: number
           storage_used?: number
           updated_at?: string
@@ -244,9 +253,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_clear_user_storage: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       admin_delete_user_documents: {
         Args: { p_user_id: string; p_document_ids?: string[] }
         Returns: Json
+      }
+      admin_reactivate_user: {
+        Args: { p_user_id: string }
+        Returns: boolean
       }
       get_admin_analytics: {
         Args: Record<PropertyKey, never>
@@ -273,6 +290,10 @@ export type Database = {
           signatures_count: number
         }[]
       }
+      get_dormant_users: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_user_storage_data: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -290,6 +311,10 @@ export type Database = {
       is_admin: {
         Args: { user_id?: string }
         Returns: boolean
+      }
+      mark_dormant_users: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       send_notification: {
         Args: {
