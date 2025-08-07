@@ -58,17 +58,19 @@ export function AdminStorageMonitor() {
       
       if (error) throw error;
       
+      console.log('Admin users data:', users); // Debug log
+      
       if (users && Array.isArray(users)) {
         const mappedData: StorageData[] = users.map((user: any) => ({
           user_id: user.id,
-          email: user.email,
+          email: user.email || 'Email not available',
           storage_used: user.storage_used || 0,
           storage_limit: user.storage_limit || 524288000,
           is_premium: user.is_premium || false,
           document_count: 0,
           signatures_count: 0,
           last_activity_at: user.last_activity_at,
-          is_dormant: user.is_dormant,
+          is_dormant: user.is_dormant || false,
           dormant_reason: user.dormant_reason
         }));
         
