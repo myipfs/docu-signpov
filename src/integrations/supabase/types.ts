@@ -253,6 +253,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_bulk_clear_storage: {
+        Args: { p_user_ids: string[] }
+        Returns: Json
+      }
       admin_clear_user_storage: {
         Args: { p_user_id: string }
         Returns: Json
@@ -294,6 +298,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_user_activity_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_user_storage_data: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -307,6 +315,10 @@ export type Database = {
           signatures_count: number
           storage_buckets: string[]
         }[]
+      }
+      get_users_by_storage_threshold: {
+        Args: { threshold_percentage?: number }
+        Returns: Json
       }
       is_admin: {
         Args: { user_id?: string }
