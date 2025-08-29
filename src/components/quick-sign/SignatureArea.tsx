@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -16,6 +15,10 @@ export function SignatureArea({ signature, onSignClick }: SignatureAreaProps) {
             src={signature} 
             alt="Your signature" 
             className="max-h-20 mx-auto mb-2"
+            onError={(e) => {
+              console.error('Signature image failed to load:', e);
+              // Handle image load errors
+            }}
           />
           <p className="text-sm text-green-600 font-medium">✓ Signature Applied</p>
         </div>
@@ -25,6 +28,7 @@ export function SignatureArea({ signature, onSignClick }: SignatureAreaProps) {
           <Button 
             variant="outline" 
             onClick={onSignClick}
+            aria-label="Open signature capture dialog"
           >
             Click to sign
           </Button>
