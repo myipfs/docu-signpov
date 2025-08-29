@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { PDFSignatureProcessor } from './PDFSignatureProcessor';
+// File: src/lib/PDFSignatureProcessor.ts
+import { PDFDocument, rgb } from 'pdf-lib';
 
 interface SignaturePosition {
   x: number;
@@ -9,71 +9,74 @@ interface SignaturePosition {
   pageIndex: number;
 }
 
-interface UseDocumentSigningReturn {
-  isProcessing: boolean;
-  error: string | null;
-  processDocument: (file: File, signature: string, position: SignaturePosition) => Promise<Blob | null>;
-  processTextSignature: (file: File, text: string, position: SignaturePosition) => Promise<Blob | null>;
-}
+export class PDFSignatureProcessor {
+  private pdfDoc: PDFDocument | null = null;
+  private originalPdfBytes: Uint8Array | null = null;
 
-export function useDocumentSigning(): UseDocumentSigningReturn {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  async loadPDF(file: File): Promise<void> {
+    this.originalPdfBytes = new Uint8Array(await file.arrayBuffer());
+    this.pdfDoc = await PDFDocument.load(this.originalPdfBytes);
+  }
 
-  const processDocument = useCallback(async (
-    file: File, 
-    signature: string, 
+  async addSignature(
+    signatureDataUrl: string, 
     position: SignaturePosition
-  ): Promise<Blob | null> => {
-    setIsProcessing(true);
-    setError(null);
+  ): Promise<Uint8Array> {
+    if (!this.pdfDoc) throw new Error('PDF not loaded');
 
-    try {
-      const processor = new PDFSignatureProcessor();
-      await processor.loadPDF(file);
-      
-      const signedPdfBytes = await processor.addSignature(signature, position);
-      
-      return new Blob([signedPdfBytes], { type: 'application/pdf' });
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      setError(errorMessage);
-      console.error('Error processing document:', err);
-      return null;
-    } finally {
-      setIsProcessing(false);
+    // Get the page where signature should be placed
+    const page = this.pdfDoc.getPage(position.pageIndex);
+    
+    // Convert signature image to PDF-compatible format
+    let signatureImage;
+    if (signatureDataUrl.startsWith('data:image/png')) {
+      const signatureBytes = this.dataUrlToBytes(signatureDataUrl);
+      signatureImage = await this.pdfDoc.embedPng(signatureBytes);
+    } else if (signatureDataUrl.startsWith('data:image/jpeg')) {
+      const signatureBytes = this.dataUrlToBytes(signatureDataUrl);
+      signatureImage = await this.pdfDoc.embedJpg(signatureBytes);
+    } else {
+      throw new Error('Unsupported signature format');
     }
-  }, []);
 
-  const processTextSignature = useCallback(async (
-    file: File,
+    // Add signature to page
+    page.drawImage(signatureImage, {
+      x: position.x,
+      y: position.y,
+      width: position.width,
+      height: position.height,
+    });
+
+    // Return modified PDF as bytes
+    return await this.pdfDoc.save();
+  }
+
+  async addTextSignature(
     text: string,
-    position: SignaturePosition
-  ): Promise<Blob | null> => {
-    setIsProcessing(true);
-    setError(null);
+    position: SignaturePosition,
+    fontSize: number = 12
+  ): Promise<Uint8Array> {
+    if (!this.pdfDoc) throw new Error('PDF not loaded');
 
-    try {
-      const processor = new PDFSignatureProcessor();
-      await processor.loadPDF(file);
-      
-      const signedPdfBytes = await processor.addTextSignature(text, position);
-      
-      return new Blob([signedPdfBytes], { type: 'application/pdf' });
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      setError(errorMessage);
-      console.error('Error processing document:', err);
-      return null;
-    } finally {
-      setIsProcessing(false);
+    const page = this.pdfDoc.getPage(position.pageIndex);
+    
+    page.drawText(text, {
+      x: position.x,
+      y: position.y,
+      size: fontSize,
+      color: rgb(0, 0, 0),
+    });
+
+    return await this.pdfDoc.save();
+  }
+
+  private dataUrlToBytes(dataUrl: string): Uint8Array {
+    const base64 = dataUrl.split(',')[1];
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
     }
-  }, []);
-
-  return {
-    isProcessing,
-    error,
-    processDocument,
-    processTextSignature
-  };
+    return bytes;
+  }
 }
